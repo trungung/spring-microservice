@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "14297028603",
+    "firebase_url": "https://rssapplication-323b0.firebaseio.com",
+    "project_id": "rssapplication-323b0",
+    "storage_bucket": "rssapplication-323b0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14297028603:android:2b43fa8c3177e80e",
+        "android_client_info": {
+          "package_name": "com.demo.rssappplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "14297028603-64tutrlvcbqsttr2fjl0jg3iuq9f5bcc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2yVTlcDMlFMrARY98k5a6pZFBNcXgFRY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

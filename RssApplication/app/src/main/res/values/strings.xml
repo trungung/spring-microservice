@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">RssApplication</string>
-    <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="title_activity_sign_up">SignUp</string>
     <string name="action_settings">Settings</string>
 </resources>
