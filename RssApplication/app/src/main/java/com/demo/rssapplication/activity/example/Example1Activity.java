@@ -1,11 +1,11 @@
 package com.demo.rssapplication.activity.example;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.demo.rssapplication.R;
+import com.demo.rssapplication.activity.base.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Observer;
 
-public class Example1Activity extends AppCompatActivity {
+public class Example1Activity extends BaseActivity {
 
     RecyclerView mColorListView;
     SimpleStringAdapter mSimpleStringAdapter;
@@ -23,6 +23,8 @@ public class Example1Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         configureLayout();
         createObservable();
+
+        showActionBar(true);
     }
 
     private void createObservable() {

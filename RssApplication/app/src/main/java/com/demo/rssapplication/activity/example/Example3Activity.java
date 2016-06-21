@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.demo.rssapplication.R;
 import com.demo.rssapplication.activity.base.BaseActivity;
@@ -12,17 +13,18 @@ import com.demo.rssapplication.activity.base.BaseActivity;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import rx.Observable;
-import rx.Observer;
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class Example2Activity extends BaseActivity {
+public class Example3Activity extends BaseActivity {
 
     private Subscription mTvShowSubscription;
     private RecyclerView mTvShowListView;
     private ProgressBar mProgressBar;
+    private TextView mErrorMessage;
     private SimpleStringAdapter mSimpleStringAdapter;
     private RestClient mRestClient;
 
@@ -31,37 +33,36 @@ public class Example2Activity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mRestClient = new RestClient(this);
         configureLayout();
-        createObservable();
+        createSingle();
     }
 
-    private void createObservable() {
-        Observable<List<String>> tvShowObservable = Observable.fromCallable(new Callable<List<String>>() {
+    private void createSingle() {
+        Single<List<String>> tvShowSingle = Single.fromCallable(new Callable<List<String>>() {
             @Override
-            public List<String> call() {
+            public List<String> call() throws Exception {
+                /**
+                 * Uncomment me (and comment out the line below) to see what happens when an error occurs.
+                 *
+                 * return RestClient.getFavoriteTvShowsWithException();
+                 */
                 return mRestClient.getFavoriteTvShows();
             }
         });
 
-        mTvShowSubscription = tvShowObservable
+        mTvShowSubscription = tvShowSingle
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Observer<List<String>>() {
-                            @Override
-                            public void onCompleted() {
+                .subscribe(new SingleSubscriber<List<String>>() {
+                    @Override
+                    public void onSuccess(List<String> tvShows) {
+                        displayTvShows(tvShows);
+                    }
 
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onNext(List<String> tvShows) {
-                                displayTvShows(tvShows);
-                            }
-                        });
+                    @Override
+                    public void onError(Throwable error) {
+                        displayErrorMessage();
+                    }
+                });
     }
 
     @Override
@@ -79,8 +80,14 @@ public class Example2Activity extends BaseActivity {
         mTvShowListView.setVisibility(View.VISIBLE);
     }
 
+    private void displayErrorMessage() {
+        mProgressBar.setVisibility(View.GONE);
+        mErrorMessage.setVisibility(View.VISIBLE);
+    }
+
     private void configureLayout() {
-        setContentView(R.layout.activity_example2);
+        setContentView(R.layout.activity_example3);
+        mErrorMessage = (TextView) findViewById(R.id.error_message);
         mProgressBar = (ProgressBar) findViewById(R.id.loader);
         mTvShowListView = (RecyclerView) findViewById(R.id.tv_show_list);
         mTvShowListView.setLayoutManager(new LinearLayoutManager(this));
