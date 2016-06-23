@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.demo.rssapplication.activity.signup.SignUpActivityFragment"
+    tools:context=".activity.signup.SignUpFragment"
     tools:showIn="@layout/activity_sign_up">
 
 
@@ -31,7 +31,22 @@
         android:layout_height="wrap_content"
         android:text="SignUp"
         android:id="@+id/btn_signup"
+        android:layout_below="@+id/btn_login"
+        android:layout_alignStart="@+id/btn_login" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LOGIN"
+        android:id="@+id/btn_login"
         android:layout_below="@+id/edt_password"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_centerHorizontal="true" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

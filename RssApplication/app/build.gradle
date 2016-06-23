@@ -34,14 +34,39 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
+
+    // recycler view
     compile 'com.android.support:recyclerview-v7:23.3.0'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:support-v4:23.3.0'
+
+    // RxAndroid
     compile 'io.reactivex:rxandroid:1.2.0'
     compile 'io.reactivex:rxjava:1.1.5'
     compile 'com.airbnb:rxgroups-android:0.3.1'
+
+    // retrofit, gson
+    compile 'com.google.code.gson:gson:2.7'
+
+    compile ('com.squareup.retrofit2:retrofit:2.1.0') {
+        // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
+        exclude module: 'okhttp'
+    }
+    compile 'com.squareup.okhttp3:okhttp:3.3.1'
+
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+    // Nucleus: utilizes the Model-View-Presenter pattern to properly connect background tasks with visual parts of an application.
+    compile 'info.android15.nucleus:nucleus:2.0.6'
+    compile 'info.android15.nucleus:nucleus-support-v4:2.0.6'
+    compile 'info.android15.nucleus:nucleus-support-v7:2.0.6'
+
+    // Butterknife
     compile 'com.jakewharton:butterknife:8.0.1'
+
+    // Firebase
     compile 'com.google.firebase:firebase-core:9.0.2'
     compile 'com.google.firebase:firebase-auth:9.0.2'
 }

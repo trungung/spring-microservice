@@ -3,27 +3,47 @@ package com.demo.rssapplication.activity.base;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.airbnb.rxgroups.AutoResubscribe;
+import com.airbnb.rxgroups.ResubscriptionObserver;
 import com.demo.rssapplication.R;
-
-import java.util.ArrayList;
+import com.demo.rssapplication.common.utilities.ViewUtils;
 
 public class BaseActivity extends AppCompatActivity {
 
+    private static final String TAG = BaseActivity.class.getSimpleName();
+    private static final String OBSERVABLE_TAG = "arbitrary_tag";
+
     protected Toolbar mToolbar;
     protected ActionBar mActionBar;
+
+    // The Observer field must be public, otherwise RxGroups can't access it
+    @AutoResubscribe
+    public final ResubscriptionObserver<Long> observer = new ResubscriptionObserver<Long>() {
+        @Override public void onCompleted() {
+            Log.d(TAG, "onCompleted()");
+        }
+
+        @Override public void onError(Throwable e) {
+            Log.e(TAG, "onError()", e);
+        }
+
+        @Override public void onNext(Long l) {
+            // output.setText(output.getText() + " " + l);
+        }
+
+        @Override public Object resubscriptionTag() {
+            return OBSERVABLE_TAG;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +59,7 @@ public class BaseActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
-            centerToolbarTitle(mToolbar);
+            ViewUtils.centerToolbarTitle(mToolbar);
         }
 
         mActionBar = getSupportActionBar();
@@ -109,24 +129,5 @@ public class BaseActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Android toolbar center title and custom font
-     *
-     * @param toolbar The toolbar
-     */
-    protected void centerToolbarTitle(@NonNull final Toolbar toolbar) {
-        final CharSequence title = toolbar.getTitle();
-        final ArrayList<View> outViews = new ArrayList<>(1);
-        toolbar.findViewsWithText(outViews, title, View.FIND_VIEWS_WITH_TEXT);
-        if (!outViews.isEmpty()) {
-            final TextView titleView = (TextView) outViews.get(0);
-            titleView.setGravity(Gravity.CENTER);
-            final Toolbar.LayoutParams layoutParams = (Toolbar.LayoutParams) titleView.getLayoutParams();
-            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            toolbar.requestLayout();
-            //also you can use titleView for changing font: titleView.setTypeface(Typeface);
-        }
     }
 }

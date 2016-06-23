@@ -7,10 +7,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
@@ -19,8 +22,28 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ViewUtils {
+
+    /**
+     * Android toolbar center title and custom font
+     *
+     * @param toolbar The toolbar
+     */
+    public static void centerToolbarTitle(@NonNull final Toolbar toolbar) {
+        final CharSequence title = toolbar.getTitle();
+        final ArrayList<View> outViews = new ArrayList<>(1);
+        toolbar.findViewsWithText(outViews, title, View.FIND_VIEWS_WITH_TEXT);
+        if (!outViews.isEmpty()) {
+            final TextView titleView = (TextView) outViews.get(0);
+            titleView.setGravity(Gravity.CENTER);
+            final Toolbar.LayoutParams layoutParams = (Toolbar.LayoutParams) titleView.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            toolbar.requestLayout();
+            //also you can use titleView for changing font: titleView.setTypeface(Typeface);
+        }
+    }
 
     /**
      * Change dp to pixel
