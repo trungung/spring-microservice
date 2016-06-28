@@ -1,11 +1,11 @@
-package com.demo.rssapplication.activity.signup;
+package com.demo.rssapplication.common.service.user;
 
-import com.demo.rssapplication.common.service.OnResponseListener;
+import com.demo.rssapplication.common.service.base.OnResponseListener;
 
 /**
  * The SignUp Interactor interface
  */
-public interface SignUpInterator {
+public interface UserInterator {
 
     /**
      * SignUp With email and password

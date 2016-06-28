@@ -1,4 +1,6 @@
-package com.demo.rssapplication.common.service;
+package com.demo.rssapplication.common.service.user;
+
+import com.demo.rssapplication.common.service.base.OnResponseListener;
 
 /**
  * The UserService support to request User's Information to backend

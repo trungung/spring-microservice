@@ -3,16 +3,22 @@ package com.demo.rssapplication.activity.signup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.demo.rssapplication.R;
 import com.demo.rssapplication.activity.example.ListExampleActivity;
+import com.demo.rssapplication.application.RssApplication;
+import com.demo.rssapplication.common.utilities.Utils;
 import com.google.firebase.auth.FirebaseUser;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,7 +26,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusFragment;
-import rx.functions.Action1;
+import rx.Observable;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -36,6 +42,12 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
 
     @BindView(R.id.edt_password)
     EditText mPasswordField;
+
+    @BindView(R.id.btn_login)
+    Button mLoginBtn;
+
+    @BindView(R.id.btn_signup)
+    Button mSignUpBtn;
 
     private Unbinder unbinder;
     
@@ -56,21 +68,66 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
         unbinder = ButterKnife.bind(this, view);
 
         final SignUpPresenterImpl presenter = getPresenter();
+
+        /**
         RxTextView.textChanges(mEmailField)
                 .subscribe(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence charSequence) {
-                        presenter.validateForm(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                        presenter.validateEmail(mEmailField);
+                        Log.d(TAG, "call: " + mEmailField.getText().toString());
                     }
+                });
+        */
+
+        /**
+        RxTextView.textChanges(mEmailField)
+                .subscribe(charSequence -> {
+                    presenter.validateEmail(mEmailField);
+                    Log.d(TAG, "call: " + mEmailField.getText().toString());
                 });
 
         RxTextView.textChanges(mPasswordField)
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        presenter.validateForm(mEmailField.getText().toString(), mPasswordField.getText().toString());
-                    }
+                .subscribe(charSequence -> {
+                    presenter.validatePassword(mPasswordField);
+                    Log.d(TAG, "call: " + mPasswordField.getText().toString());
                 });
+        */
+
+        // Check Login and SignUp enable
+        Observable<TextViewTextChangeEvent> emailChangeObservable = RxTextView.textChangeEvents(mEmailField);
+        Observable<TextViewTextChangeEvent> passwordChangeObservable = RxTextView.textChangeEvents(mPasswordField);
+
+        emailChangeObservable.subscribe(charSequence -> {
+            presenter.validateEmail(mEmailField);
+            Log.d(TAG, "call: " + mEmailField.getText().toString());
+        });
+
+        passwordChangeObservable.subscribe(charSequence -> {
+            presenter.validatePassword(mPasswordField);
+            Log.d(TAG, "call: " + mPasswordField.getText().toString());
+        });
+
+        // force-disable the button
+        mLoginBtn.setEnabled(false);
+        mSignUpBtn.setEnabled(false);
+
+        Observable.combineLatest(emailChangeObservable, passwordChangeObservable, (emailObservable, passwordObservable) -> {
+            boolean emailCheck = Utils.isValidEmail(emailObservable.text());
+            boolean passwordCheck = passwordObservable.text().length() >= 8;
+            return emailCheck && passwordCheck;
+        }).subscribe(aBoolean -> {
+            mLoginBtn.setEnabled(aBoolean);
+            mSignUpBtn.setEnabled(aBoolean);
+
+            if (aBoolean) {
+                mLoginBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorPrimary));
+                mSignUpBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorPrimary));
+            } else {
+                mLoginBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorAccent));
+                mSignUpBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorAccent));
+            }
+        });
 
         return view;
     }

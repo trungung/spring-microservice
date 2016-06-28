@@ -1,10 +1,15 @@
 package com.demo.rssapplication.activity.signup;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.widget.EditText;
 
-import com.demo.rssapplication.common.service.OnResponseListener;
-import com.demo.rssapplication.common.service.ResponseError;
+import com.demo.rssapplication.R;
+import com.demo.rssapplication.application.RssApplication;
+import com.demo.rssapplication.common.service.base.OnResponseListener;
+import com.demo.rssapplication.common.service.base.ResponseError;
+import com.demo.rssapplication.common.service.user.UserInteratorImpl;
 import com.demo.rssapplication.common.utilities.Utils;
 
 import nucleus.presenter.RxPresenter;
@@ -42,9 +47,31 @@ public class SignUpPresenterImpl extends RxPresenter<SignUpFragment> implements 
     }
 
     @Override
+    public void validateEmail(EditText emailEdt) {
+        String emailStr = emailEdt.getText().toString();
+
+        if (TextUtils.isEmpty(emailStr) || !Utils.isValidEmail(emailStr)) {
+            emailEdt.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorBgInValid));
+        } else {
+            emailEdt.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorBgValid));
+        }
+    }
+
+    @Override
+    public void validatePassword(EditText passwordEdt) {
+        String passStr = passwordEdt.getText().toString();
+
+        if (TextUtils.isEmpty(passStr) || passStr.length() < 8) {
+            passwordEdt.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorBgInValid));
+        } else {
+            passwordEdt.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorBgValid));
+        }
+    }
+
+    @Override
     public void signUp(String email, String password) {
         this.view.showProgress();
-        SignUpInteratorImpl.getInstance().signUp(email, password, new OnResponseListener() {
+        UserInteratorImpl.getInstance().signUp(email, password, new OnResponseListener() {
             @Override
             public void onSuccess(Response response) {
 
@@ -60,7 +87,7 @@ public class SignUpPresenterImpl extends RxPresenter<SignUpFragment> implements 
     @Override
     public void login(String email, String password) {
         this.view.showProgress();
-        SignUpInteratorImpl.getInstance().login(email, password, new OnResponseListener() {
+        UserInteratorImpl.getInstance().login(email, password, new OnResponseListener() {
             @Override
             public void onSuccess(Response response) {
 

@@ -1,4 +1,4 @@
-package com.demo.rssapplication.common.service;
+package com.demo.rssapplication.common.service.base;
 
 import retrofit2.Response;
 

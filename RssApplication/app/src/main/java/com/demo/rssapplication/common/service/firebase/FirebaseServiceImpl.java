@@ -1,4 +1,4 @@
-package com.demo.rssapplication.common.service;
+package com.demo.rssapplication.common.service.firebase;
 
 import android.support.annotation.NonNull;
 import android.util.Log;

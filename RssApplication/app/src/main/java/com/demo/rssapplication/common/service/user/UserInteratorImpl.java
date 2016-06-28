@@ -1,34 +1,33 @@
-package com.demo.rssapplication.activity.signup;
+package com.demo.rssapplication.common.service.user;
 
 import com.demo.rssapplication.application.RssApplication;
-import com.demo.rssapplication.common.service.OnResponseListener;
-import com.demo.rssapplication.common.service.ResponseError;
-import com.demo.rssapplication.common.service.UserServiceImpl;
+import com.demo.rssapplication.common.service.base.OnResponseListener;
+import com.demo.rssapplication.common.service.base.ResponseError;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import retrofit2.Response;
 
-public class SignUpInteratorImpl implements SignUpInterator {
+public class UserInteratorImpl implements UserInterator {
 
-    private static SignUpInterator mInstance = null;
+    private static UserInterator mInstance = null;
 
     private Realm mRealm;
 
-    private SignUpInteratorImpl() {
+    private UserInteratorImpl() {
         RealmConfiguration config = new RealmConfiguration.Builder(RssApplication.getContext()).build();
         mRealm = Realm.getInstance(config);
     }
 
     /**
-     * The singleton to get the SignUpInterator instance
+     * The singleton to get the UserInterator instance
      *
-     * @return {@link SignUpInterator}
+     * @return {@link UserInterator}
      */
-    public static SignUpInterator getInstance() {
+    public static UserInterator getInstance() {
 
         if (mInstance == null) {
-            mInstance = new SignUpInteratorImpl();
+            mInstance = new UserInteratorImpl();
         }
 
         return mInstance;

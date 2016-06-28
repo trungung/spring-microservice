@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'android-apt'
+apply plugin: 'me.tatarka.retrolambda'
 
 repositories {
     mavenCentral() // jcenter() works as well because it pulls from Maven Central
@@ -22,6 +23,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -51,6 +57,14 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.4.0'
+
+    // RxLifecycle
+    compile 'com.trello:rxlifecycle:0.6.1'
+    compile 'com.trello:rxlifecycle-components:0.6.1'
+
+    // Android Lint Checks
+//    compile 'io.vokal.lint:rxlifecycle:1.0.3'
+//    compile 'io.vokal.lint:todo:1.0.3'
 
     // retrofit, gson
     compile 'com.google.code.gson:gson:2.7'

@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -16,8 +15,10 @@ import com.airbnb.rxgroups.AutoResubscribe;
 import com.airbnb.rxgroups.ResubscriptionObserver;
 import com.demo.rssapplication.R;
 import com.demo.rssapplication.common.utilities.ViewUtils;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
-public class BaseActivity extends AppCompatActivity {
+//public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends RxAppCompatActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
     private static final String OBSERVABLE_TAG = "arbitrary_tag";

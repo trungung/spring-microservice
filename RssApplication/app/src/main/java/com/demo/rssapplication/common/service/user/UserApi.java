@@ -1,4 +1,4 @@
-package com.demo.rssapplication.common.service;
+package com.demo.rssapplication.common.service.user;
 
 import com.demo.rssapplication.common.model.User;
 

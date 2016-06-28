@@ -21,3 +21,5 @@
   **[] $VALUES;
   public *;
 }
+-dontwarn java.lang.invoke.*
+

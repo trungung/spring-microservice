@@ -1,4 +1,4 @@
-package com.demo.rssapplication.common.service;
+package com.demo.rssapplication.common.service.firebase;
 
 import com.google.firebase.auth.FirebaseUser;
 
