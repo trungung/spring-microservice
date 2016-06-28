@@ -1,5 +1,6 @@
 package com.demo.rssapplication.activity.signup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,12 +10,17 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.demo.rssapplication.R;
+import com.demo.rssapplication.activity.example.ListExampleActivity;
 import com.google.firebase.auth.FirebaseUser;
+import com.jakewharton.rxbinding.widget.RxTextView;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusFragment;
+import rx.functions.Action1;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -31,6 +37,8 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @BindView(R.id.edt_password)
     EditText mPasswordField;
 
+    private Unbinder unbinder;
+    
     private static final String TAG = SignUpFragment.class.getSimpleName();
 
     public SignUpFragment() {
@@ -44,12 +52,38 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sign_up, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+        unbinder = ButterKnife.bind(this, view);
+
+        final SignUpPresenterImpl presenter = getPresenter();
+        RxTextView.textChanges(mEmailField)
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        presenter.validateForm(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                    }
+                });
+
+        RxTextView.textChanges(mPasswordField)
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence charSequence) {
+                        presenter.validateForm(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                    }
+                });
+
+        return view;
+    }
+
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
     }
 
     @Override
@@ -60,11 +94,15 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @OnClick(R.id.btn_signup)
     public void signUpAction() {
 
+        Intent intent = new Intent(getActivity(), ListExampleActivity.class);
+        startActivity(intent);
+
+//        getPresenter().signUp(mEmailField.getText().toString(), mPasswordField.getText().toString());
     }
 
     @OnClick(R.id.btn_login)
     public void loginAction() {
-
+        getPresenter().login(mEmailField.getText().toString(), mPasswordField.getText().toString());
     }
 
     @Override
