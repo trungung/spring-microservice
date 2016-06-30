@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.demo.rssapplication.R;
 import com.demo.rssapplication.activity.base.BaseActivity;
+import com.demo.rssapplication.activity.movie.MovieListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,9 @@ public class ListExampleActivity extends BaseActivity {
                             case 5:
                                 intent = new Intent(ListExampleActivity.this, Example6Activity.class);
                                 break;
+                            case 6:
+                                intent = new Intent(ListExampleActivity.this, MovieListActivity.class);
+                                break;
                         }
 
                         startActivity(intent);
@@ -72,6 +76,8 @@ public class ListExampleActivity extends BaseActivity {
         examples.add("Example 4: Button Counter : Observable PublishSubject");
         examples.add("Example 5: Value Display : Single.just");
         examples.add("Example 6: City Search : SearchResultsSubject");
+        examples.add("Example 7: MovieListActivity");
+
 
         return examples;
     }

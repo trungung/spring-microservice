@@ -17,6 +17,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class Example1Activity extends BaseActivity {
 
@@ -48,7 +49,32 @@ public class Example1Activity extends BaseActivity {
                         Log.i(TAG, "Started in onCreate(), running until onPause(): " + num);
                     }
                 });
+
+
+        getObservable(new String[]{"Hello", "GDG", "Ternopil", "!"})
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        return "{" + s + "}";
+                    }
+                })
+                .subscribe(System.out::println);
+
+        getObservable(new String[]{"Hello", "GDG", "Ternopil", "!"})
+                .map(s -> "{" + s + "}")
+                .subscribe(System.out::println);
+
     }
+
+    public static Observable<String> getObservable(String[] arr) {
+        return Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+            for (String s : arr) {
+                subscriber.onNext(s);
+            }
+            subscriber.onCompleted();
+        });
+    }
+
 
 
     @Override

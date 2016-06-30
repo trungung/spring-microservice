@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -17,6 +16,7 @@ import com.demo.rssapplication.activity.example.ListExampleActivity;
 import com.demo.rssapplication.application.RssApplication;
 import com.demo.rssapplication.common.utilities.Utils;
 import com.google.firebase.auth.FirebaseUser;
+import com.hkm.ui.processbutton.iml.ActionProcessButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
@@ -44,10 +44,10 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     EditText mPasswordField;
 
     @BindView(R.id.btn_login)
-    Button mLoginBtn;
+    ActionProcessButton mLoginBtn;
 
     @BindView(R.id.btn_signup)
-    Button mSignUpBtn;
+    ActionProcessButton mSignUpBtn;
 
     private Unbinder unbinder;
     
@@ -111,6 +111,8 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
         // force-disable the button
         mLoginBtn.setEnabled(false);
         mSignUpBtn.setEnabled(false);
+        mLoginBtn.setMode(ActionProcessButton.Mode.ENDLESS);
+        mSignUpBtn.setMode(ActionProcessButton.Mode.ENDLESS);
 
         Observable.combineLatest(emailChangeObservable, passwordChangeObservable, (emailObservable, passwordObservable) -> {
             boolean emailCheck = Utils.isValidEmail(emailObservable.text());
@@ -127,7 +129,32 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
                 mLoginBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorAccent));
                 mSignUpBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorAccent));
             }
+
+            // mSignUpBtn.setProgress(20);
         });
+
+        /**
+        RxTextView.textChangeEvents(mEmailField)
+                .filter(new Func1<TextViewTextChangeEvent, Boolean>() {
+                    @Override
+                    public Boolean call(TextViewTextChangeEvent e) {
+                        return e.text().length() >= 3;
+                    }
+                })
+                .subscribe(new Action1<TextViewTextChangeEvent>() {
+                    @Override
+                    public void call(TextViewTextChangeEvent e) {
+                        Log.d(TAG, "call: " + e.text());
+                    }
+                });
+
+
+        RxTextView.textChangeEvents(mEmailField)
+                .filter(e -> e.text().length() >= 3)
+                .subscribe(e -> {
+                    Log.d(TAG, "call: " + e.text());
+                });
+        */
 
         return view;
     }
@@ -151,6 +178,15 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @OnClick(R.id.btn_signup)
     public void signUpAction() {
 
+        mSignUpBtn.setProgress(30);
+        try {
+            // Simulate network delay
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        mSignUpBtn.setProgress(100);
+
         Intent intent = new Intent(getActivity(), ListExampleActivity.class);
         startActivity(intent);
 
@@ -159,17 +195,30 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
 
     @OnClick(R.id.btn_login)
     public void loginAction() {
-        getPresenter().login(mEmailField.getText().toString(), mPasswordField.getText().toString());
+        mSignUpBtn.setProgress(30);
+        try {
+            // Simulate network delay
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        mSignUpBtn.setProgress(100);
+
+        Intent intent = new Intent(getActivity(), ListExampleActivity.class);
+        startActivity(intent);
+
+//        getPresenter().login(mEmailField.getText().toString(), mPasswordField.getText().toString());
     }
 
     @Override
     public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
+        mSignUpBtn.setProgress(30);
+//        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+//        progressBar.setVisibility(View.GONE);
     }
 
     @Override

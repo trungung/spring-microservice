@@ -1,12 +1,15 @@
 package com.demo.rssapplication.common.service.user;
 
 import com.demo.rssapplication.application.RssApplication;
+import com.demo.rssapplication.common.service.base.ApiClient;
+import com.demo.rssapplication.common.service.base.NetworkRequest;
 import com.demo.rssapplication.common.service.base.OnResponseListener;
 import com.demo.rssapplication.common.service.base.ResponseError;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import retrofit2.Response;
+import rx.Subscription;
 
 public class UserInteratorImpl implements UserInterator {
 
@@ -46,6 +49,12 @@ public class UserInteratorImpl implements UserInterator {
                 listener.onFailure(error);
             }
         });
+
+        UserApi mUserApi = ApiClient.getClient().create(UserApi.class);
+        Subscription getPostSubscription =
+                NetworkRequest.performAsyncRequest(mUserApi.createAccount(email, password),
+                        listener::onSuccess,
+                        throwable -> listener.onFailure(ResponseError.build(throwable)));
     }
 
     @Override

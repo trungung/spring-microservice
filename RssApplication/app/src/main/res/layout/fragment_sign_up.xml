@@ -2,13 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.signup.SignUpFragment"
     tools:showIn="@layout/activity_sign_up">
 
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/edt_email"
@@ -19,8 +22,10 @@
         android:layout_marginTop="50dp" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/edt_password"
@@ -30,29 +35,44 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:text="SignUp"
-        android:id="@+id/btn_signup"
-        android:background="@color/colorPrimaryDark"
-        android:textColor="@android:color/white"
-        android:layout_below="@+id/btn_login"
-        android:layout_marginTop="5dp"
-        android:layout_alignStart="@+id/btn_login"
-        android:enabled="false"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:text="LOGIN"
+    <com.hkm.ui.processbutton.iml.ActionProcessButton
         android:id="@+id/btn_login"
-        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="Login"
         android:textColor="@android:color/white"
-        android:layout_below="@+id/edt_password"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        app:pb_colorComplete="@color/green_complete"
+        app:pb_colorNormal="@color/colorPrimary"
+        app:pb_colorPressed="@color/colorPrimaryDark"
+        app:pb_textComplete="Successful"
+        app:pb_textProgress="Loading..."
         android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
-        android:enabled="false"/>
+        android:layout_below="@+id/edt_password"/>
+
+    <com.hkm.ui.processbutton.iml.ActionProcessButton
+        android:id="@+id/btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="Sign up"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        app:pb_colorComplete="@color/green_complete"
+        app:pb_colorNormal="@color/colorPrimary"
+        app:pb_colorPressed="@color/colorPrimaryDark"
+        app:pb_textComplete="Successful"
+        app:pb_textProgress="Loading..."
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btn_login"/>
+
 
     <ProgressBar
         android:id="@+id/progress"
