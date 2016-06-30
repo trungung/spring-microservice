@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Button;
 
 import com.demo.rssapplication.R;
 import com.demo.rssapplication.activity.example.ListExampleActivity;
@@ -20,6 +20,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.hkm.ui.processbutton.iml.ActionProcessButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.RxLifecycle;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +32,9 @@ import butterknife.Unbinder;
 import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusFragment;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -53,7 +60,7 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @BindView(R.id.btn_progress)
     ActionProcessButton mProgressBtn;
 
-
+    PublishSubject<ActivityEvent> subject = PublishSubject.create();
     private Unbinder unbinder;
     
     private static final String TAG = SignUpFragment.class.getSimpleName();
@@ -113,6 +120,9 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
             Log.d(TAG, "call: " + mPasswordField.getText().toString());
         });
 
+        emailChangeObservable.compose(RxLifecycle.bindActivity(subject));
+        passwordChangeObservable.compose(RxLifecycle.bindActivity(subject));
+
         // force-disable the button
         mLoginBtn.setEnabled(false);
         mSignUpBtn.setEnabled(true);
@@ -123,7 +133,7 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
             boolean emailCheck = Utils.isValidEmail(emailObservable.text());
             boolean passwordCheck = passwordObservable.text().length() >= 8;
             return emailCheck && passwordCheck;
-        }).subscribe(aBoolean -> {
+        }).compose(RxLifecycle.bindActivity(subject)).subscribe(aBoolean -> {
             mLoginBtn.setEnabled(aBoolean);
             mSignUpBtn.setEnabled(aBoolean);
 
@@ -160,6 +170,15 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
                 .subscribe(e -> {
                     Log.d(TAG, "call: " + e.text());
                 });
+
+         RxView.clicks(mLoginBtn).subscribe(aVoid -> {
+            loginAction();
+         });
+
+         RxView.clicks(mSignUpBtn).subscribe(aVoid -> {
+            signUpAction();
+         });
+
         */
 
         return view;
@@ -168,6 +187,8 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @Override public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+
+        subject.onNext(ActivityEvent.DESTROY);
     }
 
     @Override
@@ -179,13 +200,27 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @Override
     public void onStop() {
         super.onStop();
+
+        subject.onNext(ActivityEvent.STOP);
     }
 
     @OnClick(R.id.btn_signup)
     public void signUpAction() {
 
-        Intent intent = new Intent(getActivity(), ListExampleActivity.class);
-        startActivity(intent);
+        mProgressBtn.setProgress(30);
+        mProgressBtn.setText("Signing Up...");
+        Observable.interval(3, TimeUnit.SECONDS)
+                .doOnUnsubscribe(() -> Log.i(TAG, "Unsubscribing subscription from onCreate()"))
+                .observeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxLifecycle.bindActivity(subject))
+                .takeUntil(subject)
+                .subscribe(num -> {
+                    Log.i(TAG, "Started in onCreate(), running until onPause(): " + num);
+//                    mProgressBtn.setProgress(100);
+                    Intent intent = new Intent(getActivity(), ListExampleActivity.class);
+                    startActivity(intent);
+                });
 
 //        getPresenter().signUp(mEmailField.getText().toString(), mPasswordField.getText().toString());
     }
@@ -193,8 +228,20 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @OnClick(R.id.btn_login)
     public void loginAction() {
 
-        Intent intent = new Intent(getActivity(), ListExampleActivity.class);
-        startActivity(intent);
+        mProgressBtn.setProgress(30);
+        mProgressBtn.setText("Loging...");
+        Observable.interval(3, TimeUnit.SECONDS)
+                .doOnUnsubscribe(() -> Log.i(TAG, "Unsubscribing subscription from onCreate()"))
+                .observeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .compose(RxLifecycle.bindActivity(subject))
+                .takeUntil(subject)
+                .subscribe(num -> {
+                    Log.i(TAG, "Started in onCreate(), running until onPause(): " + num);
+//                    mProgressBtn.setProgress(100);
+                    Intent intent = new Intent(getActivity(), ListExampleActivity.class);
+                    startActivity(intent);
+                });
 
 //        getPresenter().login(mEmailField.getText().toString(), mPasswordField.getText().toString());
     }

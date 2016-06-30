@@ -18,7 +18,7 @@ public class ApiClient {
 
 
     public static Retrofit getClient() {
-        if (retrofit==null) {
+        if (retrofit == null) {
 
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
             httpClient.addInterceptor(chain -> {
