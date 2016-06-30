@@ -2,7 +2,6 @@ package com.demo.rssapplication.common.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmObject;
@@ -17,8 +16,6 @@ public class Movie extends RealmObject {
     private String overview;
     @SerializedName("release_date")
     private String releaseDate;
-    @SerializedName("genre_ids")
-    private List<Integer> genreIds = new ArrayList<Integer>();
     @SerializedName("id")
     private Integer id;
     @SerializedName("original_title")
@@ -38,6 +35,10 @@ public class Movie extends RealmObject {
     @SerializedName("vote_average")
     private Double voteAverage;
 
+    public Movie() {
+
+    }
+
     public Movie(String posterPath, boolean adult, String overview, String releaseDate, List<Integer> genreIds, Integer id,
                  String originalTitle, String originalLanguage, String title, String backdropPath, Double popularity,
                  Integer voteCount, Boolean video, Double voteAverage) {
@@ -45,7 +46,6 @@ public class Movie extends RealmObject {
         this.adult = adult;
         this.overview = overview;
         this.releaseDate = releaseDate;
-        this.genreIds = genreIds;
         this.id = id;
         this.originalTitle = originalTitle;
         this.originalLanguage = originalLanguage;
@@ -87,14 +87,6 @@ public class Movie extends RealmObject {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
-    }
-
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
     }
 
     public Integer getId() {

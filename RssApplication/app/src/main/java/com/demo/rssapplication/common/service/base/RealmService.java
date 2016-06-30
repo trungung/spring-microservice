@@ -19,7 +19,7 @@ public class RealmService {
 
     private RealmService() {
         RealmConfiguration config = new RealmConfiguration.Builder(RssApplication.getContext()).build();
-        mRealm = Realm.getInstance(config);
+        mRealm = Realm.getInstance(config);;
     }
 
     /**

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Button;
 
 import com.demo.rssapplication.R;
 import com.demo.rssapplication.activity.example.ListExampleActivity;
@@ -44,10 +45,14 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     EditText mPasswordField;
 
     @BindView(R.id.btn_login)
-    ActionProcessButton mLoginBtn;
+    Button mLoginBtn;
 
     @BindView(R.id.btn_signup)
-    ActionProcessButton mSignUpBtn;
+    Button mSignUpBtn;
+
+    @BindView(R.id.btn_progress)
+    ActionProcessButton mProgressBtn;
+
 
     private Unbinder unbinder;
     
@@ -110,9 +115,9 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
 
         // force-disable the button
         mLoginBtn.setEnabled(false);
-        mSignUpBtn.setEnabled(false);
-        mLoginBtn.setMode(ActionProcessButton.Mode.ENDLESS);
-        mSignUpBtn.setMode(ActionProcessButton.Mode.ENDLESS);
+        mSignUpBtn.setEnabled(true);
+        mProgressBtn.setMode(ActionProcessButton.Mode.ENDLESS);
+        mProgressBtn.setProgress(0);
 
         Observable.combineLatest(emailChangeObservable, passwordChangeObservable, (emailObservable, passwordObservable) -> {
             boolean emailCheck = Utils.isValidEmail(emailObservable.text());
@@ -125,12 +130,13 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
             if (aBoolean) {
                 mLoginBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorPrimary));
                 mSignUpBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorPrimary));
+                mProgressBtn.setProgress(100);
             } else {
                 mLoginBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorAccent));
                 mSignUpBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorAccent));
+                mProgressBtn.setProgress(30);
+                mProgressBtn.setText("Validating...");
             }
-
-            // mSignUpBtn.setProgress(20);
         });
 
         /**
@@ -178,15 +184,6 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @OnClick(R.id.btn_signup)
     public void signUpAction() {
 
-        mSignUpBtn.setProgress(30);
-        try {
-            // Simulate network delay
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        mSignUpBtn.setProgress(100);
-
         Intent intent = new Intent(getActivity(), ListExampleActivity.class);
         startActivity(intent);
 
@@ -195,14 +192,6 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
 
     @OnClick(R.id.btn_login)
     public void loginAction() {
-        mSignUpBtn.setProgress(30);
-        try {
-            // Simulate network delay
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        mSignUpBtn.setProgress(100);
 
         Intent intent = new Intent(getActivity(), ListExampleActivity.class);
         startActivity(intent);
@@ -212,13 +201,13 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
 
     @Override
     public void showProgress() {
-        mSignUpBtn.setProgress(30);
-//        progressBar.setVisibility(View.VISIBLE);
+        mProgressBtn.setProgress(30);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-//        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -253,7 +242,7 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     }
 
     private void updateUI(FirebaseUser user) {
-//        hideProgressDialog();
+        hideProgress();
         if (user != null) {
         } else {
         }
