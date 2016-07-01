@@ -1,14 +1,19 @@
 package com.demo.rssapplication.common.service.user;
 
 import com.demo.rssapplication.application.RssApplication;
+import com.demo.rssapplication.common.model.AuthCredentials;
+import com.demo.rssapplication.common.model.User;
 import com.demo.rssapplication.common.service.base.ApiClient;
 import com.demo.rssapplication.common.service.base.NetworkRequest;
 import com.demo.rssapplication.common.service.base.OnResponseListener;
 import com.demo.rssapplication.common.service.base.ResponseError;
 
+import javax.security.auth.login.LoginException;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import retrofit2.Response;
+import rx.Observable;
 import rx.Subscription;
 
 public class UserInteratorImpl implements UserInterator {
@@ -34,6 +39,28 @@ public class UserInteratorImpl implements UserInterator {
         }
 
         return mInstance;
+    }
+
+    @Override
+    public Observable<User> doLogin(AuthCredentials credentials) {
+
+        return Observable.just(credentials).flatMap(credentials1 -> {
+
+            try {
+                // Simulate network delay
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (credentials1.getEmail().equals("abc@gmail.com") && credentials1.getPassword().equals("123456789")) {
+                User user = new User();
+                // TODO: will save the object to Database
+                return Observable.just(user);
+            }
+
+            return Observable.error(new LoginException());
+        });
     }
 
     @Override

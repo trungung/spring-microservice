@@ -3,27 +3,26 @@ package com.demo.rssapplication.activity.signup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.demo.rssapplication.R;
 import com.demo.rssapplication.activity.example.ListExampleActivity;
-import com.demo.rssapplication.application.RssApplication;
+import com.demo.rssapplication.common.utilities.KeyboardUtils;
 import com.demo.rssapplication.common.utilities.Utils;
-import com.google.firebase.auth.FirebaseUser;
 import com.hkm.ui.processbutton.iml.ActionProcessButton;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,8 +31,6 @@ import butterknife.Unbinder;
 import nucleus.factory.RequiresPresenter;
 import nucleus.view.NucleusFragment;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 /**
@@ -46,19 +43,18 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     ProgressBar progressBar;
 
     @BindView(R.id.edt_email)
-    EditText mEmailField;
+    MaterialEditText mEmailField;
 
     @BindView(R.id.edt_password)
-    EditText mPasswordField;
+    MaterialEditText mPasswordField;
 
-    @BindView(R.id.btn_login)
-    Button mLoginBtn;
+    @BindView(R.id.btn_signin)
+    ActionProcessButton mSigninBtn;
 
-    @BindView(R.id.btn_signup)
-    Button mSignUpBtn;
+    @BindView(R.id.error_txt)
+    TextView mErrorTxt;
 
-    @BindView(R.id.btn_progress)
-    ActionProcessButton mProgressBtn;
+    public Animation shake;
 
     PublishSubject<ActivityEvent> subject = PublishSubject.create();
     private Unbinder unbinder;
@@ -80,43 +76,23 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
         unbinder = ButterKnife.bind(this, view);
 
         final SignUpPresenterImpl presenter = getPresenter();
+        presenter.onTakeView(this);
 
-        /**
-        RxTextView.textChanges(mEmailField)
-                .subscribe(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence charSequence) {
-                        presenter.validateEmail(mEmailField);
-                        Log.d(TAG, "call: " + mEmailField.getText().toString());
-                    }
-                });
-        */
-
-        /**
-        RxTextView.textChanges(mEmailField)
-                .subscribe(charSequence -> {
-                    presenter.validateEmail(mEmailField);
-                    Log.d(TAG, "call: " + mEmailField.getText().toString());
-                });
-
-        RxTextView.textChanges(mPasswordField)
-                .subscribe(charSequence -> {
-                    presenter.validatePassword(mPasswordField);
-                    Log.d(TAG, "call: " + mPasswordField.getText().toString());
-                });
-        */
+        // Init shake animation
+        shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+        mErrorTxt.setVisibility(View.GONE);
 
         // Check Login and SignUp enable
         Observable<TextViewTextChangeEvent> emailChangeObservable = RxTextView.textChangeEvents(mEmailField);
         Observable<TextViewTextChangeEvent> passwordChangeObservable = RxTextView.textChangeEvents(mPasswordField);
 
         emailChangeObservable.subscribe(charSequence -> {
-            presenter.validateEmail(mEmailField);
+            //presenter.validateEmail(mEmailField);
             Log.d(TAG, "call: " + mEmailField.getText().toString());
         });
 
         passwordChangeObservable.subscribe(charSequence -> {
-            presenter.validatePassword(mPasswordField);
+            //presenter.validatePassword(mPasswordField);
             Log.d(TAG, "call: " + mPasswordField.getText().toString());
         });
 
@@ -124,29 +100,17 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
         passwordChangeObservable.compose(RxLifecycle.bindActivity(subject));
 
         // force-disable the button
-        mLoginBtn.setEnabled(false);
-        mSignUpBtn.setEnabled(true);
-        mProgressBtn.setMode(ActionProcessButton.Mode.ENDLESS);
-        mProgressBtn.setProgress(0);
+        mSigninBtn.setMode(ActionProcessButton.Mode.ENDLESS);
+        mSigninBtn.setProgress(0);
 
         Observable.combineLatest(emailChangeObservable, passwordChangeObservable, (emailObservable, passwordObservable) -> {
             boolean emailCheck = Utils.isValidEmail(emailObservable.text());
             boolean passwordCheck = passwordObservable.text().length() >= 8;
             return emailCheck && passwordCheck;
         }).compose(RxLifecycle.bindActivity(subject)).subscribe(aBoolean -> {
-            mLoginBtn.setEnabled(aBoolean);
-            mSignUpBtn.setEnabled(aBoolean);
-
-            if (aBoolean) {
-                mLoginBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorPrimary));
-                mSignUpBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorPrimary));
-                mProgressBtn.setProgress(100);
-            } else {
-                mLoginBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorAccent));
-                mSignUpBtn.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorAccent));
-                mProgressBtn.setProgress(30);
-                mProgressBtn.setText("Validating...");
-            }
+            mSigninBtn.setEnabled(aBoolean);
+            if (aBoolean)
+                mErrorTxt.setVisibility(View.GONE);
         });
 
         /**
@@ -181,6 +145,16 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
 
         */
 
+        RxView.clicks(view).subscribe(aVoid -> {
+            // Hide keyboard
+            if (!KeyboardUtils.hideKeyboard(mEmailField)) {
+                KeyboardUtils.hideKeyboard(mPasswordField);
+            }
+
+            getPresenter().validateEmail(mEmailField);
+            getPresenter().validatePassword(mPasswordField);
+        });
+
         return view;
     }
 
@@ -194,7 +168,6 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -204,72 +177,63 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
         subject.onNext(ActivityEvent.STOP);
     }
 
-    @OnClick(R.id.btn_signup)
-    public void signUpAction() {
+    @OnClick(R.id.btn_signin_overlay)
+    public void signInAction() {
 
-        mProgressBtn.setProgress(30);
-        mProgressBtn.setText("Signing Up...");
-        Observable.interval(3, TimeUnit.SECONDS)
-                .doOnUnsubscribe(() -> Log.i(TAG, "Unsubscribing subscription from onCreate()"))
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindActivity(subject))
-                .takeUntil(subject)
-                .subscribe(num -> {
-                    Log.i(TAG, "Started in onCreate(), running until onPause(): " + num);
-//                    mProgressBtn.setProgress(100);
-                    Intent intent = new Intent(getActivity(), ListExampleActivity.class);
-                    startActivity(intent);
-                });
+        // Hide keyboard
+        if (!KeyboardUtils.hideKeyboard(mEmailField)) {
+            KeyboardUtils.hideKeyboard(mPasswordField);
+        }
 
-//        getPresenter().signUp(mEmailField.getText().toString(), mPasswordField.getText().toString());
-    }
-
-    @OnClick(R.id.btn_login)
-    public void loginAction() {
-
-        mProgressBtn.setProgress(30);
-        mProgressBtn.setText("Loging...");
-        Observable.interval(3, TimeUnit.SECONDS)
-                .doOnUnsubscribe(() -> Log.i(TAG, "Unsubscribing subscription from onCreate()"))
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycle.bindActivity(subject))
-                .takeUntil(subject)
-                .subscribe(num -> {
-                    Log.i(TAG, "Started in onCreate(), running until onPause(): " + num);
-//                    mProgressBtn.setProgress(100);
-                    Intent intent = new Intent(getActivity(), ListExampleActivity.class);
-                    startActivity(intent);
-                });
-
-//        getPresenter().login(mEmailField.getText().toString(), mPasswordField.getText().toString());
+        // Start login
+        mErrorTxt.setVisibility(View.GONE);
+        getPresenter().login(mEmailField.getText().toString(), mPasswordField.getText().toString());
     }
 
     @Override
     public void showProgress() {
-        mProgressBtn.setProgress(30);
-        progressBar.setVisibility(View.VISIBLE);
+        mSigninBtn.setProgress(30);
+//        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+//        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void setEmailError() {
-        mEmailField.setError(getString(R.string.email_error));
+        mEmailField.clearAnimation();
+        Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+        mEmailField.startAnimation(shake);
     }
 
     @Override
     public void setPasswordError() {
-        mPasswordField.setError(getString(R.string.pass_error));
+        mPasswordField.clearAnimation();
+        Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+        mPasswordField.startAnimation(shake);
     }
 
     @Override
     public void navigateToHome() {
+        mSigninBtn.setProgress(100);
+        Intent intent = new Intent(getActivity(), ListExampleActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
 
+    @Override
+    public void showError() {
+        mSigninBtn.setProgress(0);
+        mEmailField.clearAnimation();
+        Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+        mEmailField.startAnimation(shake);
+        mPasswordField.clearAnimation();
+        Animation shake2 = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+        mPasswordField.startAnimation(shake2);
+
+        mErrorTxt.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -282,16 +246,8 @@ public class SignUpFragment extends NucleusFragment<SignUpPresenterImpl> impleme
 
     }
 
-
     @Override
     public void onClick(View view) {
         getPresenter().validateForm(mEmailField.getText().toString(), mPasswordField.getText().toString());
-    }
-
-    private void updateUI(FirebaseUser user) {
-        hideProgress();
-        if (user != null) {
-        } else {
-        }
     }
 }

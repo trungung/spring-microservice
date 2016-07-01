@@ -37,6 +37,8 @@ public class MovieListActivity extends NucleusActionBarActivity<MoviePresenterIm
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
 
+        showProgress();
+
         // Load movies data
         getPresenter().getTopRatedMovies();
     }

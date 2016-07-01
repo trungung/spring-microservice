@@ -35,8 +35,6 @@ public class MoviePresenterImpl extends RxPresenter<MovieListActivity> implement
     @Override
     public void getTopRatedMovies() {
 
-//        getView().showProgress();
-
         MovieApi apiService = ApiClient.getClient().create(MovieApi.class);
 
         Call<MoviesResponse> call = apiService.getTopRatedMovies(ApiClient.API_KEY);

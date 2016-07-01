@@ -93,6 +93,8 @@ dependencies {
 
     // android-process-button
     compile 'com.hkm:hkmprocessbuttons:1.2.4'
+//    compile 'com.github.jjhesk:hkm-progress-button:0.15'
+    compile 'com.rengwuxian.materialedittext:library:2.0.3'
 }
 
 dependencies {

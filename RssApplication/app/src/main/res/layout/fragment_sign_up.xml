@@ -1,55 +1,72 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.signup.SignUpFragment"
     tools:showIn="@layout/activity_sign_up">
 
-
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/edt_email"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
-        android:layout_marginTop="5dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:padding="3dp"
-        android:textColor="@android:color/white" />
+        android:layout_marginTop="20dp"
+        android:hint="Email"
+        android:textCursorDrawable="@drawable/text_cursor"
+        app:met_floatingLabel="highlight"
+        app:met_iconLeft="@drawable/ic_username"
+        app:met_iconPadding="16dp"
+        app:met_primaryColor="@color/accent" />
 
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/edt_password"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/edt_email"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:layout_marginTop="5dp"
-        android:ems="10"
+        android:hint="Password"
         android:inputType="textPassword"
-        android:padding="3dp"
-        android:textColor="@android:color/white" />
+        android:textCursorDrawable="@drawable/text_cursor"
+        app:met_floatingLabel="highlight"
+        app:met_iconLeft="@drawable/ic_password"
+        app:met_primaryColor="@color/accent" />
 
-    <Button
-        android:id="@+id/btn_signup"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_below="@+id/btn_login"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/colorPrimaryDark"
-        android:enabled="false"
-        android:text="Sign Up"
-        android:textColor="@android:color/white" />
+    <!--<Button-->
+    <!--android:id="@+id/btn_signup"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="48dp"-->
+    <!--android:layout_below="@+id/btn_login"-->
+    <!--android:layout_marginLeft="50dp"-->
+    <!--android:layout_marginRight="50dp"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--android:background="@color/colorPrimaryDark"-->
+    <!--android:enabled="false"-->
+    <!--android:text="Sign Up"-->
+    <!--android:textColor="@android:color/white" />-->
 
-    <Button
-        android:id="@+id/btn_login"
+    <!--<Button-->
+    <!--android:id="@+id/btn_login"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="48dp"-->
+    <!--android:layout_below="@+id/edt_password"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginLeft="50dp"-->
+    <!--android:layout_marginRight="50dp"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--android:background="@color/colorPrimary"-->
+    <!--android:enabled="false"-->
+    <!--android:text="Login"-->
+    <!--android:textColor="@android:color/white" />-->
+
+    <com.hkm.ui.processbutton.iml.ActionProcessButton
+        android:id="@+id/btn_signin"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@+id/edt_password"
@@ -57,49 +74,41 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:layout_marginTop="5dp"
-        android:background="@color/colorPrimary"
-        android:enabled="false"
-        android:text="Login"
-        android:textColor="@android:color/white" />
-
-    <com.hkm.ui.processbutton.iml.ActionProcessButton
-        android:id="@+id/btn_progress"
+        android:text="Sign in"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
         app:pb_colorComplete="@color/green_complete"
-        app:pb_colorNormal="@color/colorPrimary"
-        app:pb_colorPressed="@color/colorPrimaryDark"
+        app:pb_colorNormal="@color/accent"
+        app:pb_colorPressed="@color/accent_dark"
         app:pb_textComplete="Successful"
-        app:pb_textProgress="Loading..."
+        app:pb_textProgress="Loading..." />
+
+    <Button
+        android:id="@+id/btn_signin_overlay"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_below="@+id/btn_signup"
+        android:layout_below="@+id/edt_password"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:layout_marginTop="5dp"
-        android:text="Progress"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:background="@android:color/transparent"/>
 
-    <!--<com.hkm.ui.processbutton.iml.ActionProcessButton-->
-    <!--android:id="@+id/btn_signup"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="48dp"-->
-    <!--android:layout_marginLeft="50dp"-->
-    <!--android:layout_marginRight="50dp"-->
-    <!--android:text="Sign up"-->
-    <!--android:textColor="@android:color/white"-->
-    <!--android:textSize="18sp"-->
-    <!--android:textAllCaps="false"-->
-    <!--app:pb_colorComplete="@color/green_complete"-->
-    <!--app:pb_colorNormal="@color/colorPrimary"-->
-    <!--app:pb_colorPressed="@color/colorPrimaryDark"-->
-    <!--app:pb_textComplete="Successful"-->
-    <!--app:pb_textProgress="Loading..."-->
-    <!--android:layout_marginTop="10dp"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:layout_below="@+id/btn_login"/>-->
-
+    <TextView
+        android:id="@+id/error_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_signin"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="10dp"
+        android:text="Wrong email or password"
+        android:textColor="@color/red"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/progress"

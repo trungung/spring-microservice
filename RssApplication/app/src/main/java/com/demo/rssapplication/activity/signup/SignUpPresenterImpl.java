@@ -1,12 +1,11 @@
 package com.demo.rssapplication.activity.signup;
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.EditText;
 
-import com.demo.rssapplication.R;
-import com.demo.rssapplication.application.RssApplication;
+import com.demo.rssapplication.common.model.AuthCredentials;
+import com.demo.rssapplication.common.model.User;
 import com.demo.rssapplication.common.service.base.OnResponseListener;
 import com.demo.rssapplication.common.service.base.ResponseError;
 import com.demo.rssapplication.common.service.user.UserInteratorImpl;
@@ -14,10 +13,14 @@ import com.demo.rssapplication.common.utilities.Utils;
 
 import nucleus.presenter.RxPresenter;
 import retrofit2.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class SignUpPresenterImpl extends RxPresenter<SignUpFragment> implements SignUpPresenter {
 
     private SignUpFragment view;
+    private Subscriber<User> subscriber;
 
     @Override
     protected void onCreate(Bundle savedState) {
@@ -34,6 +37,7 @@ public class SignUpPresenterImpl extends RxPresenter<SignUpFragment> implements 
     @Override
     public boolean validateForm(String email, String password) {
         if (TextUtils.isEmpty(email) && !Utils.isValidEmail(email)) {
+
             this.view.setEmailError();
             return false;
         }
@@ -51,9 +55,8 @@ public class SignUpPresenterImpl extends RxPresenter<SignUpFragment> implements 
         String emailStr = emailEdt.getText().toString();
 
         if (TextUtils.isEmpty(emailStr) || !Utils.isValidEmail(emailStr)) {
-            emailEdt.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorBgInValid));
-        } else {
-            emailEdt.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorBgValid));
+//            if (!KeyboardUtils.keyboardIsShowed(emailEdt))
+                this.view.setEmailError();
         }
     }
 
@@ -62,9 +65,8 @@ public class SignUpPresenterImpl extends RxPresenter<SignUpFragment> implements 
         String passStr = passwordEdt.getText().toString();
 
         if (TextUtils.isEmpty(passStr) || passStr.length() < 8) {
-            passwordEdt.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorBgInValid));
-        } else {
-            passwordEdt.setBackgroundColor(ContextCompat.getColor(RssApplication.getContext(), R.color.colorBgValid));
+//            if (!KeyboardUtils.keyboardIsShowed(passwordEdt))
+                this.view.setPasswordError();
         }
     }
 
@@ -86,18 +88,54 @@ public class SignUpPresenterImpl extends RxPresenter<SignUpFragment> implements 
 
     @Override
     public void login(String email, String password) {
-        this.view.showProgress();
-        UserInteratorImpl.getInstance().login(email, password, new OnResponseListener() {
-            @Override
-            public void onSuccess(Response response) {
+//        this.view.showProgress();
+//        UserInteratorImpl.getInstance().login(email, password, new OnResponseListener() {
+//            @Override
+//            public void onSuccess(Response response) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(ResponseError error) {
+//
+//            }
+//        });
 
+        view.showProgress();
+
+        // Kind of "callback"
+        cancelSubscription();
+        subscriber = new Subscriber<User>() {
+            @Override
+            public void onCompleted() {
+                view.navigateToHome();
             }
 
             @Override
-            public void onFailure(ResponseError error) {
-
+            public void onError(Throwable e) {
+                view.showError();
             }
-        });
+
+            @Override
+            public void onNext(User user) {
+                // Blank
+            }
+        };
+
+        // do the login
+        UserInteratorImpl.getInstance().doLogin(new AuthCredentials(email, password))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    /**
+     * Cancels any previous callback
+     */
+    private void cancelSubscription() {
+        if (subscriber != null && !subscriber.isUnsubscribed()) {
+            subscriber.unsubscribe();
+        }
     }
 }
 
