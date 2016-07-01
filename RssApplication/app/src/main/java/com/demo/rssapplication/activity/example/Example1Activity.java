@@ -63,7 +63,6 @@ public class Example1Activity extends BaseActivity {
         getObservable(new String[]{"Hello", "GDG", "Ternopil", "!"})
                 .map(s -> "{" + s + "}")
                 .subscribe(System.out::println);
-
     }
 
     public static Observable<String> getObservable(String[] arr) {
