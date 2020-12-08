@@ -1,14 +1,13 @@
 package com.api.ecommerce.reactive
 
-import com.sun.net.httpserver.HttpServer
 import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter
-import org.springframework.web.servlet.function.RequestPredicates.contentType
-import org.springframework.web.servlet.function.RequestPredicates.path
-import org.springframework.web.servlet.function.RouterFunction
-import org.springframework.web.servlet.function.RouterFunctions.nest
-import org.springframework.web.servlet.function.ServerResponse
-
+import org.springframework.web.reactive.function.server.RequestPredicates.*
+import org.springframework.web.reactive.function.server.RouterFunction
+import org.springframework.web.reactive.function.server.RouterFunctions.*
+import org.springframework.web.reactive.function.server.ServerResponse
+import reactor.ipc.netty.http.server.HttpServer
 
 class Server {
 
@@ -18,22 +17,21 @@ class Server {
     fun main(args: Array<String>) {
         val server = Server()
         server.startReactorServer()
-        System.out.println("Press ENTER to exit.")
+        println("Press ENTER to exit.")
         System.`in`.read()
     }
 
     fun startReactorServer() {
         val route = routingFunction()
-        val httpHandler = toHttpHandller(route)
+        val httpHandler = toHttpHandler(route)
         val adapter = ReactorHttpHandlerAdapter(httpHandler)
         val server = HttpServer.create(HOST, PORT)
-        server.newHandler(adapter).block();
+        server.newHandler(adapter).block()
     }
 
     fun routingFunction(): RouterFunction<ServerResponse> {
-        val repository: UserRepository = UserRepositorySample()
+        val repository: UserRepository = UserRepositoryImpl()
         val handler = UserHandler(repository)
-
         return nest(
             path("/user"),
             nest(

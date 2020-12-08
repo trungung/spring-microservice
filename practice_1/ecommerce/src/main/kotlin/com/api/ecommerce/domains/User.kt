@@ -1,3 +1,3 @@
 package com.api.ecommerce.domains
 
-data class User(val userid: String, val username: String)
+data class User(val userid: Int, val username: String)
