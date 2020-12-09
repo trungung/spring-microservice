@@ -25,11 +25,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 
 	// Reactor webflux and reactor netty
-	implementation("org.springframework.boot:spring-boot-starter-webflux")
+//	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("io.projectreactor:reactor-core:3.4.1")
 	testImplementation("io.projectreactor:reactor-test:3.4.1")
-//	implementation("io.projectreactor.ipc:reactor-netty:0.7.15.RELEASE")
-	implementation ("io.projectreactor.ipc:reactor-netty:0.6.6.RELEASE")
+	implementation("io.projectreactor.ipc:reactor-netty:0.7.15.RELEASE")
 
 	// Json parser with jackson
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

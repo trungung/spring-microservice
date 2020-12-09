@@ -22,11 +22,11 @@ class Server {
     }
 
     fun startReactorServer() {
-        val route = routingFunction()
-        val httpHandler = toHttpHandler(route)
-        val adapter = ReactorHttpHandlerAdapter(httpHandler)
-        val server = HttpServer.create(HOST, PORT)
-        server.newHandler(adapter).block()
+//        val route = routingFunction()
+//        val httpHandler = toHttpHandler(route)
+//        val adapter = ReactorHttpHandlerAdapter(httpHandler)
+//        val server = HttpServer.create(HOST, PORT)
+//        server.newHandler(adapter).block()
     }
 
     fun routingFunction(): RouterFunction<ServerResponse> {
@@ -36,13 +36,10 @@ class Server {
             path("/user"),
             nest(
                 accept(APPLICATION_JSON),
-                route(GET("/{id}"), handler::getAllUsers).andRoute(
-                    method(HttpMethod.GET),
-                    handler::getAllUsers
-                )
-            ).andRoute(
-                POST("/").and(contentType(APPLICATION_JSON)),
-                handler::getAllUsers
+                route(GET("/"), handler::getAllUsers)
+                    .andRoute(method(HttpMethod.GET), handler::getAllUsers))
+                .andRoute(
+                POST("/").and(contentType(APPLICATION_JSON)), handler::getAllUsers
             )
         )
     }
