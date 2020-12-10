@@ -29,6 +29,7 @@ dependencies {
 	implementation("io.projectreactor:reactor-core:3.4.1")
 	testImplementation("io.projectreactor:reactor-test:3.4.1")
 	implementation("io.projectreactor.ipc:reactor-netty:0.7.15.RELEASE")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
 
 	// Json parser with jackson
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
