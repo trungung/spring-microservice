@@ -22,14 +22,17 @@ repositories {
 }
 
 dependencies {
-//	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-web")
 
 	// Reactor webflux and reactor netty
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("io.projectreactor:reactor-core:3.4.1")
-	testImplementation("io.projectreactor:reactor-test:3.4.1")
+    implementation("junit:junit:4.12")
+    testImplementation("io.projectreactor:reactor-test:3.4.1")
 	implementation("io.projectreactor.ipc:reactor-netty:0.7.15.RELEASE")
 	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+	implementation("org.jsoup:jsoup:1.13.1")
+	implementation("com.google.code.gson:gson:2.8.6")
 
 	// Json parser with jackson
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

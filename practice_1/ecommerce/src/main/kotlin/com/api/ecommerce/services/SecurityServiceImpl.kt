@@ -2,10 +2,12 @@ package com.api.ecommerce.services
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import org.springframework.stereotype.Service
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
 import javax.xml.bind.DatatypeConverter
 
+@Service
 class SecurityServiceImpl: SecurityService {
 
     private val secretKey = "4C8kum4LxyKWYLM78sKdXrzbBjDCFyfX"
