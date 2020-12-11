@@ -6,35 +6,33 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.http.MediaType
+import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
 
-@SpringBootTest
-@RunWith(SpringJUnit4ClassRunner::class)
+@SpringBootApplication
+class MockMvcApplication
+
+@WebMvcTest
+@RunWith(SpringRunner::class)
 class UserMockMVCTests {
 
     @Autowired
-    lateinit var ctx: WebApplicationContext
-
     lateinit var mockMVC: MockMvc
-
-    @Before
-    fun setup() {
-        this.mockMVC = MockMvcBuilders.webAppContextSetup(this.ctx).build()
-    }
 
     @Test
     fun testBasicMvc() {
         val result = mockMVC
             .perform(MockMvcRequestBuilders.get("/"))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("result", Matchers.`is`("ECOMMERCE!")))
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.content().string("ECOMMERCE!"))
             .andReturn()
 
         val content = result.response.contentAsString
