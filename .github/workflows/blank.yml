@@ -28,5 +28,6 @@ jobs:
       - name: Run Docker-compose script
         run: |
           cd /home/runner/work/spring-microservice/spring-microservice/practice_1/ecommerce
+          ./gradlew build
           docker-compose up
           echo deploy your project.
