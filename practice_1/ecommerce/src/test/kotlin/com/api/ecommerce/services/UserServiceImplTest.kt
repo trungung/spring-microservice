@@ -2,7 +2,7 @@ package com.api.ecommerce.services
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.jupiter.api.Test
+import org.junit.Test
 
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
