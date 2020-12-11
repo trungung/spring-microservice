@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: go to root project
-        run: cd practice_1/ecommerce
+        run: cd /home/runner/work/spring-microservice/spring-microservice/practice_1/ecommerce
 
       - name: Run Docker-compose script
         run: docker-compose up
