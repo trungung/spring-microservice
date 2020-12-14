@@ -15,24 +15,71 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  test:
+    name: Test - Unit & Integration
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      - name: Run Test
+      - uses: actions/checkout@v1
+      - name: Gradle Test
         run: |
           cd /home/runner/work/spring-microservice/spring-microservice/practice_1/ecommerce
           ./gradlew test
 
-      - name: Run Docker-compose script
-        run: |
-          cd /home/runner/work/spring-microservice/spring-microservice/practice_1/ecommerce
-          ./gradlew clean build
-          docker-compose up
-          echo deploy your project.
+  docker:
+    name: Publish - Docker Hub
+    runs-on: ubuntu-latest
+    needs: [test]
+    env:
+      REPO: ${{ secrets.DOCKER_REPO }}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11.0.4
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }} 
+             -p ${{ secrets.DOCKER_PASS }}
+      - name: Build Docker image
+        cd /home/runner/work/spring-microservice/spring-microservice/practice_1/ecommerce
+        run:docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+      - name: Publish Docker image
+        run: docker push $REPO
+
+  # redeploy:
+  #   name: Redeploy webhook call
+  #   runs-on: ubuntu-latest
+  #   needs: [docker]
+  #   steps:
+  #     - name: Deploy docker container webhook
+  #       uses: joelwmale/webhook-action@master
+  #       env:
+  #         WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL  }}
+  #         data: "{ 'myField': 'myFieldValue'}"
+
+
+
+  # This workflow contains a single job called "build"
+  # build:
+  #   # The type of runner that the job will run on
+  #   runs-on: ubuntu-latest
+
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  #     - uses: actions/checkout@v2
+
+  #     - name: Run Test
+  #       run: |
+  #         cd /home/runner/work/spring-microservice/spring-microservice/practice_1/ecommerce
+  #         ./gradlew test
+
+  #     - name: Run Docker-compose script
+  #       run: |
+  #         cd /home/runner/work/spring-microservice/spring-microservice/practice_1/ecommerce
+  #         ./gradlew clean build
+  #         docker stop app
+  #         docker rm app
+  #         docker rmi app
+  #         docker-compose up --build
+  #         echo deploy your project.

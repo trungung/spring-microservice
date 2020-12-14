@@ -32,7 +32,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-	// Reactor webflux and reactor netty
+	// Reactor webflux and reactor netty (just for practice)
 	// implementation("org.springframework.boot:spring-boot-starter-webflux")
 	// implementation("io.projectreactor:reactor-core:3.4.1")
     // testImplementation("io.projectreactor:reactor-test:3.4.1")
