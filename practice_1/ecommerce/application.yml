@@ -1,0 +1,13 @@
+springdoc:
+  api-docs:
+    path: /swagger-ui.html
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/ecommerce"
+    username: postgres
+    password: postgres

@@ -14,9 +14,31 @@ services:
       - SPRING_DATASOURCE_PASSWORD=compose-postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
           
+   # Database Service (Postgres)
   db:
-    image: 'postgres:13.1-alpine'
-    container_name: db
+    # Use the Docker Image postgres.
+    image: postgres:13.1-alpine
+    # Give the container the name postgres-db. You can changes to something else.
+    container_name: postgres-db
+    restart: always
+    # Set a volume some that database is not lost after shutting down the container.
+    # I used the name postgres-data but you can changed it to something else.
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    # Maps port 5432 (localhost) to port 5432 on the container. You can change the ports to fix your needs.
+    ports:
+      - "5432:5432"
+    # Setup the username, password, and database name. You can changes these values.
     environment:
-      - POSTGRES_USER=compose-postgres
-      - POSTGRES_PASSWORD=compose-postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecommerce
+      PGDATA: /var/lib/postgresql/data/pgdata
+    # Service health check
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 1m
+      timeout: 10s
+      retries: 2

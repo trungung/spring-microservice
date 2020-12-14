@@ -25,7 +25,7 @@ internal class UserServiceImplTest {
     @Test
     fun testGetUser() {
         val user = userSevice.getUser(1)
-        assertTrue(user.username.contains("David"))
+        assertTrue(user.userName.contains("David"))
     }
 
     @Test
