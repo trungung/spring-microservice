@@ -45,8 +45,8 @@ dependencies {
 	testImplementation("junit:junit:4.12")
 	testImplementation("org.jsoup:jsoup:1.13.1")
 	implementation("com.google.code.gson:gson:2.8.6")
-	testImplementation("org.junit.platform:junit-platform-commons:1.5.2")
-
+	testImplementation("org.junit.platform:junit-platform-commons:1.7.0")
+	testRuntimeOnly("org.junit.platform:junit-platform-commons:1.7.0")
 	// Json parser with jackson
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
