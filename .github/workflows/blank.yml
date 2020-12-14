@@ -41,8 +41,9 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USER }} 
              -p ${{ secrets.DOCKER_PASS }}
       - name: Build Docker image
-        cd /home/runner/work/spring-microservice/spring-microservice/practice_1/ecommerce
-        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+        run: |
+          cd /home/runner/work/spring-microservice/spring-microservice/practice_1/ecommerce
+          docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
       - name: Publish Docker image
         run: docker push $REPO
 
