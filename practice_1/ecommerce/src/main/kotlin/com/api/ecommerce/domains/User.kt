@@ -18,9 +18,7 @@ data class User(
     var phone: String,
 
     @Column(name = "role")
-    val role: Role) {
-    constructor()
-}
+    val role: Role)
 
 inline fun createAdminUser(userName: String, email: String, phone: String):User {
     return User(0, userName, email, phone, Role.ADMIN)

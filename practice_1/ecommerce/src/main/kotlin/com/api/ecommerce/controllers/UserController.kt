@@ -32,7 +32,7 @@ class UserController {
     }
 
     @ResponseBody
-    @PostMapping("")
+    @PostMapping("/admin")
     fun createAdmin(
         @RequestParam("user_name") userName: String,
         @RequestParam("email") email: String,
@@ -49,7 +49,7 @@ class UserController {
     }
 
     @ResponseBody
-    @PostMapping("")
+    @PostMapping("/business")
     fun createBusiness(
         @RequestParam("user_name") userName: String,
         @RequestParam("email") email: String,
@@ -66,7 +66,7 @@ class UserController {
     }
 
     @ResponseBody
-    @PostMapping("")
+    @PostMapping("/customer")
     fun createCustomer(
         @RequestParam("user_name") userName: String,
         @RequestParam("email") email: String,
