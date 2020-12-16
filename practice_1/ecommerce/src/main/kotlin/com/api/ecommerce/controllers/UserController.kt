@@ -4,6 +4,10 @@ import com.api.ecommerce.domains.User
 import com.api.ecommerce.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import javax.validation.constraints.Email
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
+import javax.validation.constraints.NotBlank
 
 @RestController
 @RequestMapping("/user")
@@ -27,9 +31,18 @@ class UserController {
     @ResponseBody
     @PostMapping("/admin")
     fun createAdmin(
-        @RequestParam("user_name") userName: String,
-        @RequestParam("email") email: String,
-        @RequestParam("phone") phone: String
+        @RequestParam("user_name")
+        @NotBlank(message = "UserName should be valid")
+        userName: String,
+
+        @RequestParam("email")
+        @Email(message = "Email should be valid")
+        email: String,
+
+        @RequestParam("phone")
+        @Min(value = 9, message="Phone number must be equal or greater than 9")
+        @Max(value = 12, message="Phone number must be equal or less than 12")
+        phone: String
     ): Map<String, Any> {
 
         // Create admin user and save to db
@@ -48,9 +61,18 @@ class UserController {
     @ResponseBody
     @PostMapping("/business")
     fun createBusiness(
-        @RequestParam("user_name") userName: String,
-        @RequestParam("email") email: String,
-        @RequestParam("phone") phone: String
+        @RequestParam("user_name")
+        @NotBlank(message = "UserName should be valid")
+        userName: String,
+
+        @RequestParam("email")
+        @Email(message = "Email should be valid")
+        email: String,
+
+        @RequestParam("phone")
+        @Min(value = 9, message="Phone number must be equal or greater than 9")
+        @Max(value = 12, message="Phone number must be equal or less than 12")
+        phone: String
     ): Map<String, Any> {
 
         // Create admin user and save to db
@@ -69,9 +91,18 @@ class UserController {
     @ResponseBody
     @PostMapping("/customer")
     fun createCustomer(
-        @RequestParam("user_name") userName: String,
-        @RequestParam("email") email: String,
-        @RequestParam("phone") phone: String
+        @RequestParam("user_name")
+        @NotBlank(message = "UserName should be valid")
+        userName: String,
+
+        @RequestParam("email")
+        @Email(message = "Email should be valid")
+        email: String,
+
+        @RequestParam("phone")
+        @Min(value = 9, message="Phone number must be equal or greater than 9")
+        @Max(value = 12, message="Phone number must be equal or less than 12")
+        phone: String
     ): Map<String, Any> {
 
         // Create admin user and save to db
@@ -90,8 +121,12 @@ class UserController {
     @ResponseBody
     @PutMapping("")
     fun updateUser(
-        @RequestParam("user_id") userId: Int,
-        @RequestParam("user_name") userName: String
+        @RequestParam("user_id")
+        @NotBlank(message = "Id should be valid")
+        userId: Int,
+        @RequestParam("user_name")
+        @NotBlank(message = "UserName should not empty")
+        userName: String
     ): Map<String, Any> {
         // userService.updateUser(userId, userName)
         val map = LinkedHashMap<String, Any>()

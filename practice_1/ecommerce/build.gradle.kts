@@ -29,6 +29,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("com.okta.spring:okta-spring-boot-starter:1.2.1")
 
+	// Spring boot validation
+	implementation("org.springframework.boot:spring-boot-starter-validation:2.4.1")
+
 	// Data rest and configuration
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
