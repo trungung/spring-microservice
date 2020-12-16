@@ -1,0 +1,13 @@
+package com.api.ecommerce.configuration
+
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.transaction.annotation.EnableTransactionManagement
+
+@Configuration
+@EnableJpaRepositories(basePackages = ["com.api.ecommerce.repositories"])
+@PropertySource("persistence-h2.properties")
+@EnableTransactionManagement
+class H2JpaConfig {
+}

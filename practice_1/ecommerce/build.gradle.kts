@@ -63,6 +63,9 @@ dependencies {
 
 	// PostgresSql
 	implementation("org.postgresql:postgresql")
+
+	// https://mvnrepository.com/artifact/com.h2database/h2
+	testImplementation("com.h2database:h2:1.3.148")
 }
 
 tasks.withType<KotlinCompile> {
