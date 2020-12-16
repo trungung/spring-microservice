@@ -11,3 +11,19 @@ spring:
     url: "jdbc:postgresql://localhost:5432/ecommerce"
     username: postgres
     password: postgres
+    initialization-mode: alway
+    initialization: true
+    continue-on-error: true
+
+# ////////////
+# NOTES
+# ////////////
+#
+#  - Postgres DB. 5432 is the default port of Postgres
+#  - spring.jpa.hibernate.ddl-auto will turn off the hibernate auto-creation of the tables from the entity objects
+#  - spring.datasource.initialization-mode=alway is marked as always as we want initialization of the database to happen on every startup. This is optional and made for this sample purpose.
+#  - spring.datasource.initialize=true will mark the initialization to be true.
+#  - spring.datasource.continue-on-error=true will continue application startup in spite of any errors in data initialization.
+#  - spring.datasource.url URL of the Postgres DB. It can be a remote DB as well.
+#  - spring.datasource.username username for the database.
+#  - spring.datasource.password password for the database.
