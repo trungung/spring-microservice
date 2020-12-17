@@ -22,6 +22,22 @@ class UserRepositoryTest {
     lateinit var userRepository: UserRepository
 
     @Test
+    fun whenCreateNewUser() {
+        // given
+        val user = User()
+        user.userName = "userName"
+        user.email = "email"
+        user.phone = "123456789"
+        user.setAdminRole()
+        userRepository.save(user)
+
+        // when
+        val found = userRepository.findById(user.userId)
+        // then
+        assertNotNull(found)
+    }
+
+    @Test
     fun whenFindById_thenReturnUser() {
         // given
         val user = User()
@@ -38,5 +54,15 @@ class UserRepositoryTest {
         // then
         assertNotNull(found)
         assertEquals(found.get().userName, user.userName)
+    }
+
+    @Test
+    fun whenUpdateUser_thenReturnUser() {
+        // TODO
+    }
+
+    @Test
+    fun whenDeleteUser() {
+        // TODO
     }
 }

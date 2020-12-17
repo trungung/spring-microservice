@@ -1,16 +1,19 @@
 package com.api.ecommerce.controllers
 
 import com.api.ecommerce.domains.User
+import com.api.ecommerce.dto.requests.UserRequest
 import com.api.ecommerce.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 class UserController {
 
     @Autowired
@@ -30,108 +33,53 @@ class UserController {
 
     @ResponseBody
     @PostMapping("/admin")
-    fun createAdmin(
-        @RequestParam("user_name")
-        @NotBlank(message = "UserName should be valid")
-        userName: String,
-
-        @RequestParam("email")
-        @Email(message = "Email should be valid")
-        email: String,
-
-        @RequestParam("phone")
-        @Min(value = 9, message="Phone number must be equal or greater than 9")
-        @Max(value = 12, message="Phone number must be equal or less than 12")
-        phone: String
-    ): Map<String, Any> {
-
+    fun createAdmin(@RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
         val user = User()
-        user.userName = userName
-        user.email = email
-        user.phone = phone
+        user.userName = request.userName
+        user.email = request.email
+        user.phone = request.phone
         user.setAdminRole()
         userRepository.save(user)
-
-        val map = LinkedHashMap<String, Any>()
-        map["result"] = "Added"
-        return map
+        return ResponseEntity.ok(user)
     }
 
     @ResponseBody
     @PostMapping("/business")
-    fun createBusiness(
-        @RequestParam("user_name")
-        @NotBlank(message = "UserName should be valid")
-        userName: String,
-
-        @RequestParam("email")
-        @Email(message = "Email should be valid")
-        email: String,
-
-        @RequestParam("phone")
-        @Min(value = 9, message="Phone number must be equal or greater than 9")
-        @Max(value = 12, message="Phone number must be equal or less than 12")
-        phone: String
-    ): Map<String, Any> {
-
+    fun createBusiness(@RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
         val user = User()
-        user.userName = userName
-        user.email = email
-        user.phone = phone
+        user.userName = request.userName
+        user.email = request.email
+        user.phone = request.phone
         user.setBusinessRole()
         userRepository.save(user)
-
-        val map = LinkedHashMap<String, Any>()
-        map["result"] = "Added"
-        return map
+        return ResponseEntity.ok(user)
     }
 
     @ResponseBody
     @PostMapping("/customer")
-    fun createCustomer(
-        @RequestParam("user_name")
-        @NotBlank(message = "UserName should be valid")
-        userName: String,
-
-        @RequestParam("email")
-        @Email(message = "Email should be valid")
-        email: String,
-
-        @RequestParam("phone")
-        @Min(value = 9, message="Phone number must be equal or greater than 9")
-        @Max(value = 12, message="Phone number must be equal or less than 12")
-        phone: String
-    ): Map<String, Any> {
-
+    fun createCustomer(@RequestBody request: UserRequest): ResponseEntity<User> {
         // Create admin user and save to db
         val user = User()
-        user.userName = userName
-        user.email = email
-        user.phone = phone
+        user.userName = request.userName
+        user.email = request.email
+        user.phone = request.phone
         user.setCustomerRole()
         userRepository.save(user)
-
-        val map = LinkedHashMap<String, Any>()
-        map["result"] = "Added"
-        return map
+        return ResponseEntity.ok(user)
     }
 
     @ResponseBody
     @PutMapping("")
-    fun updateUser(
-        @RequestParam("user_id")
-        @NotBlank(message = "Id should be valid")
-        userId: Int,
-        @RequestParam("user_name")
-        @NotBlank(message = "UserName should not empty")
-        userName: String
-    ): Map<String, Any> {
-        // userService.updateUser(userId, userName)
-        val map = LinkedHashMap<String, Any>()
-        map["result"] = "Updated"
-        return map
+    fun updateUser(@RequestBody request: UserRequest): ResponseEntity<User> {
+        val user = User()
+        user.userName = request.userName
+        user.email = request.email
+        user.phone = request.phone
+        user.setCustomerRole()
+        userRepository.save(user)
+        return ResponseEntity.ok(user)
     }
 
     @ResponseBody
