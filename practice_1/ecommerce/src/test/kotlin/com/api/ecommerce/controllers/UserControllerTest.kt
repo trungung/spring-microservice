@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.util.*
 
 @RunWith(SpringRunner::class)
 @ActiveProfiles("test")
@@ -30,13 +32,38 @@ class UserControllerTest {
     lateinit var userRepository: UserRepository
 
     @Test
-    fun create_admin_user_success() {
+    fun getAllUsers() {
+        Mockito.`when`(userRepository.findAll()).thenReturn(Collections.emptyList())
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/users")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn()
+    }
+
+
+    @Test
+    fun getUserById() {
+        val user = User()
+        Mockito.`when`(userRepository.findById(anyLong())).thenReturn(Optional.of(user))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/users/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn()
+    }
+
+    @Test
+    fun createAdminUser_success() {
         val request = UserRequest("abc", "abc@gmail.com", "123456789")
         val user = User()
         Mockito.`when`(userRepository.save(any(User::class.java))).thenReturn(user)
         mockMvc.perform(
             MockMvcRequestBuilders.post("/users/admin")
-                .content(request.toString())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Gson().toJson(request)))

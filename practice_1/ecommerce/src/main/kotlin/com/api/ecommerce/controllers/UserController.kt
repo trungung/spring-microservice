@@ -5,6 +5,7 @@ import com.api.ecommerce.dto.requests.UserRequest
 import com.api.ecommerce.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.validation.constraints.Email
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotBlank
 
 @RestController
 @RequestMapping("/users")
+@Validated
 class UserController {
 
     @Autowired
@@ -27,8 +29,9 @@ class UserController {
 
     @ResponseBody
     @GetMapping("/{id}")
-    fun getUser(@PathVariable("id") userId : Long): User {
-        return userRepository.findById(userId).get()
+    fun getUser(@PathVariable("id") userId : Long): ResponseEntity<User> {
+        val user = userRepository.findById(userId).orElseThrow()
+        return ResponseEntity.ok(user)
     }
 
     @ResponseBody
