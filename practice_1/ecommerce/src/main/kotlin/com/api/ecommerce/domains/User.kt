@@ -28,7 +28,7 @@ data class User(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val userId: Int = -1
+    val userId: Long = -1
 ) {
 
     constructor() : this("", "", "", 0, -1)

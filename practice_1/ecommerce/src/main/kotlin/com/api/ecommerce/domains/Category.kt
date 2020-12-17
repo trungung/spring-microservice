@@ -14,7 +14,7 @@ data class Category(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Int = -1) {
+    val id: Long = -1) {
 
     constructor() : this("", "", -1)
 }

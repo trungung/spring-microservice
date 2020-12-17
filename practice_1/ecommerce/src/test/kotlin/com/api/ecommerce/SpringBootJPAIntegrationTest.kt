@@ -10,9 +10,14 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.PropertySource
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.TestPropertySource
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = [EcommerceApplication::class, H2JpaConfig::class])
+@ActiveProfiles("test")
+@SpringBootTest
 class SpringBootJPAIntegrationTest {
 
     @Autowired
@@ -27,7 +32,7 @@ class SpringBootJPAIntegrationTest {
         user.setAdminRole()
 
         val userEntity: User = userRepository.save(user)
-        val foundEntity: User = userRepository.findById(userEntity.userId.toLong()).get()
+        val foundEntity: User = userRepository.findById(userEntity.userId).get()
         assertNotNull(foundEntity)
         assertEquals(userEntity.phone, foundEntity.phone)
     }

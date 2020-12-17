@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 
 @Configuration
 @EnableJpaRepositories(basePackages = ["com.api.ecommerce.repositories"])
-@PropertySource("persistence-h2.properties")
+@PropertySource("classpath:application-test.properties")
 @EnableTransactionManagement
 class H2JpaConfig {
 }
