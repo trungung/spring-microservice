@@ -15,6 +15,11 @@ spring:
     initialization-mode: always
     initialization: true
     continue-on-error: true
+  security:
+    user:
+      name: admin
+      password: admin
+
 
 # ////////////
 # NOTES

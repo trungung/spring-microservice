@@ -2,41 +2,43 @@ package com.api.ecommerce.controllers
 
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.dto.requests.UserRequest
+import com.api.ecommerce.errors.ErrorResponse
+import com.api.ecommerce.errors.RecordNotFoundException
 import com.api.ecommerce.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import java.util.logging.Logger
+import javax.validation.Valid
 import javax.validation.constraints.Email
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
+import kotlin.jvm.Throws
 
 @RestController
 @RequestMapping("/users")
-@Validated
 class UserController {
 
     @Autowired
     lateinit var userRepository: UserRepository
 
-    @ResponseBody
     @GetMapping("")
     fun getAllUsers(): List<User> {
         return userRepository.findAll().distinct()
     }
 
-    @ResponseBody
     @GetMapping("/{id}")
     fun getUser(@PathVariable("id") userId : Long): ResponseEntity<User> {
-        val user = userRepository.findById(userId).orElseThrow()
+        val user = userRepository.findById(userId).get()
         return ResponseEntity.ok(user)
     }
 
-    @ResponseBody
     @PostMapping("/admin")
-    fun createAdmin(@RequestBody request: UserRequest): ResponseEntity<User>  {
+    fun createAdmin(@RequestBody @Valid request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
         val user = User()
         user.userName = request.userName
@@ -47,9 +49,8 @@ class UserController {
         return ResponseEntity.ok(user)
     }
 
-    @ResponseBody
     @PostMapping("/business")
-    fun createBusiness(@RequestBody request: UserRequest): ResponseEntity<User>  {
+    fun createBusiness(@RequestBody @Valid request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
         val user = User()
         user.userName = request.userName
@@ -60,9 +61,8 @@ class UserController {
         return ResponseEntity.ok(user)
     }
 
-    @ResponseBody
-    @PostMapping("/customer")
-    fun createCustomer(@RequestBody request: UserRequest): ResponseEntity<User> {
+    @PostMapping("/customer", MediaType.APPLICATION_JSON_VALUE)
+    fun createCustomer(@RequestBody @Valid request: UserRequest): ResponseEntity<User> {
         // Create admin user and save to db
         val user = User()
         user.userName = request.userName
@@ -73,7 +73,6 @@ class UserController {
         return ResponseEntity.ok(user)
     }
 
-    @ResponseBody
     @PutMapping("")
     fun updateUser(@RequestBody request: UserRequest): ResponseEntity<User> {
         val user = User()
@@ -85,7 +84,6 @@ class UserController {
         return ResponseEntity.ok(user)
     }
 
-    @ResponseBody
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable("id") userId: Long): Map<String, Any> {
         userRepository.deleteById(userId)
