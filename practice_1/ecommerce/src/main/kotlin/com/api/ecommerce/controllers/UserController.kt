@@ -1,5 +1,6 @@
 package com.api.ecommerce.controllers
 
+import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.dto.requests.UserRequest
 import com.api.ecommerce.errors.ErrorResponse
@@ -41,11 +42,7 @@ class UserController {
     @PostMapping("/admin")
     fun createAdmin(@Valid @RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
-        val user = User()
-        user.userName = request.userName
-        user.email = request.email
-        user.phone = request.phone
-        user.setAdminRole()
+        val user = User(request.userName, request.email, request.phone, Role.ADMIN.value)
         userRepository.save(user)
         return ResponseEntity.ok(user)
     }
@@ -53,11 +50,7 @@ class UserController {
     @PostMapping("/business")
     fun createBusiness(@Valid @RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
-        val user = User()
-        user.userName = request.userName
-        user.email = request.email
-        user.phone = request.phone
-        user.setBusinessRole()
+        val user = User(request.userName, request.email, request.phone, Role.BUSINESS.value)
         userRepository.save(user)
         return ResponseEntity.ok(user)
     }

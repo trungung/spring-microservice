@@ -23,11 +23,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.*
 
-@RunWith(SpringRunner::class)
-@ActiveProfiles("test")
 @WebMvcTest(UserController::class)
-@AutoConfigureMockMvc(addFilters = false)
-class UserControllerTest {
+class UserControllerTest: BaseControllerTest() {
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -44,7 +41,7 @@ class UserControllerTest {
             MockMvcRequestBuilders.get("/users")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andReturn()
     }
@@ -94,18 +91,6 @@ class UserControllerTest {
             MockMvcRequestBuilders.post("/users/admin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(""))
-            .andExpect(status().isBadRequest)
-            .andReturn()
-    }
-
-    @Test
-    fun createAdminUser_invalid_email() {
-        val request = UserRequest("abc", "email", "123456789")
-        val json = mapper.writeValueAsString(request)
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/admin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
             .andExpect(status().isBadRequest)
             .andReturn()
     }

@@ -58,7 +58,7 @@ class AuthenController {
         }
 
         // TODO
-        
+
         // Create Response data
         val response = RegisterResponse(request.userName, request.email, request.phone)
         return ResponseEntity.ok(DataResponse(HttpStatus.CREATED.value(), response))
