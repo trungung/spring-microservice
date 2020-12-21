@@ -21,6 +21,7 @@ import kotlin.jvm.Throws
 
 @RestController
 @RequestMapping("/users")
+@Validated
 class UserController {
 
     @Autowired
@@ -38,7 +39,7 @@ class UserController {
     }
 
     @PostMapping("/admin")
-    fun createAdmin(@RequestBody @Valid request: UserRequest): ResponseEntity<User>  {
+    fun createAdmin(@Valid @RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
         val user = User()
         user.userName = request.userName
@@ -50,7 +51,7 @@ class UserController {
     }
 
     @PostMapping("/business")
-    fun createBusiness(@RequestBody @Valid request: UserRequest): ResponseEntity<User>  {
+    fun createBusiness(@Valid @RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
         val user = User()
         user.userName = request.userName
@@ -62,7 +63,7 @@ class UserController {
     }
 
     @PostMapping("/customer", MediaType.APPLICATION_JSON_VALUE)
-    fun createCustomer(@RequestBody @Valid request: UserRequest): ResponseEntity<User> {
+    fun createCustomer(@Valid @RequestBody request: UserRequest): ResponseEntity<User> {
         // Create admin user and save to db
         val user = User()
         user.userName = request.userName
@@ -74,7 +75,7 @@ class UserController {
     }
 
     @PutMapping("")
-    fun updateUser(@RequestBody request: UserRequest): ResponseEntity<User> {
+    fun updateUser(@Valid @RequestBody request: UserRequest): ResponseEntity<User> {
         val user = User()
         user.userName = request.userName
         user.email = request.email

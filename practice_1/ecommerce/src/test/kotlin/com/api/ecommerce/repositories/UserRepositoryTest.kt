@@ -24,10 +24,7 @@ class UserRepositoryTest {
     @Test
     fun whenCreateNewUser() {
         // given
-        val user = User()
-        user.userName = "userName"
-        user.email = "email"
-        user.phone = "123456789"
+        val user = User("userName", "email", "123456789")
         user.setAdminRole()
         userRepository.save(user)
 
@@ -40,10 +37,7 @@ class UserRepositoryTest {
     @Test
     fun whenFindById_thenReturnUser() {
         // given
-        val user = User()
-        user.userName = "userName"
-        user.email = "email"
-        user.phone = "123456789"
+        val user = User("userName", "email", "123456789")
         user.setAdminRole()
         entityManager.persist<Any>(user)
         entityManager.flush()
@@ -55,6 +49,35 @@ class UserRepositoryTest {
         assertNotNull(found)
         assertEquals(found.get().userName, user.userName)
     }
+
+    @Test
+    fun whenFindByEmail_thenReturnUser() {
+        // given
+        val user = User("userName", "email", "123456789")
+        user.setAdminRole()
+        userRepository.save(user)
+
+        // when
+        val found = userRepository.findUserByEmail(user.email)
+
+        // then
+        assertNotNull(found)
+        assertEquals(found?.email, user.email)
+    }
+
+    @Test
+    fun whenFindByEmail_notExist_thenReturnEmpty() {
+        // given
+        val user = User("userName", "email", "123456789")
+        user.setAdminRole()
+
+        // when
+        val found = userRepository.findUserByEmail(user.email)
+
+        // then
+        assertNull(found)
+    }
+
 
     @Test
     fun whenUpdateUser_thenReturnUser() {

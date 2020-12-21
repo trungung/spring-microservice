@@ -1,6 +1,5 @@
 package com.api.ecommerce.dto.requests
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import javax.validation.constraints.Email

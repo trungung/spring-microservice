@@ -24,7 +24,7 @@ data class User(
     var phone: String,
 
     @Column(name = "role")
-    var role: Int,
+    var role: Int = 0,
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,7 +33,14 @@ data class User(
 
     constructor() : this("", "", "", 0, -1)
 
-    override fun toString(): String{
+    constructor(userName: String, email: String, phone: String, role: Int) : this() {
+        this.userName = userName
+        this.email = email
+        this.phone = phone
+        this.role = role
+    }
+
+    override fun toString(): String {
         return "User [id= + ${this.userId} + , name= + ${this.userName} + , email= + ${this.email} + , phone= + ${this.phone} + ]";
     }
 
@@ -47,12 +54,5 @@ data class User(
 
     fun setCustomerRole() {
         this.role = Role.CUSTOMER.value
-    }
-
-    fun createUser(userName: String, email: String, phone: String, role: Int) {
-        this.userName = userName
-        this.email = email
-        this.phone = phone
-        this.role = role
     }
 }

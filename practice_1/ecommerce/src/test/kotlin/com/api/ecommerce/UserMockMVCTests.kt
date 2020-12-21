@@ -47,22 +47,4 @@ class UserMockMVCTests {
         val content = result.response.contentAsString
         print("Response: $content")
     }
-
-    @Test
-    @Throws(Exception::class)
-    fun testSingleUser() {
-        val result = mockMVC
-            .perform(
-                get("/user/0")
-                    .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
-            )
-            .andExpect(status().isOk)
-            .andExpect(content().contentType(APPLICATION_JSON))
-            .andExpect(jsonPath("userid", `is`(0)))
-            .andReturn()
-
-        val content = result.response.contentAsString
-        print("Response: $content")
-    }
 }
