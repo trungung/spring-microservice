@@ -9,15 +9,13 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/categories")
 class CategoryController {
     @Autowired
     lateinit var categoryRepository: CategoryRepository
 
-    @ResponseBody
     @GetMapping("")
     fun getAllCategories(): List<Category> {
         return categoryRepository.findAll().distinct()
     }
-
 }

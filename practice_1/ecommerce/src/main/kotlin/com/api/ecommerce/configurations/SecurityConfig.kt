@@ -1,4 +1,4 @@
-package com.api.ecommerce.configuration
+package com.api.ecommerce.configurations
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
@@ -16,11 +16,29 @@ import javax.servlet.http.HttpServletResponse
 @EnableWebSecurity
 class SecurityConfig: WebSecurityConfigurerAdapter() {
 
+    private val PERMITTED = listOf(
+        "/v1/auth/person",
+        "/v1/auth/group",
+        "/v1/time",
+        "/v1/jwt",
+        "/v1/debug/**",
+        "/v2/api-docs",
+        "/configuration/**",
+        "/swagger-resources/**",
+        "/swagger-ui.html",
+        "/webjars/**",
+        "/api-docs/**",
+        "/health",
+        "/info",
+        "/users/*",
+        "/customers/*"
+    )
+
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         // Enable CORS and disable CSRF
         http.cors().and().csrf().disable()
-        // Set session management to stateless
+        // Set session management to statelessz
         http.sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
@@ -36,8 +54,8 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
 
         http.authorizeRequests()
             // public endpoints
-            .antMatchers("/", "/home", "/swagger-ui/**", "/users/*").permitAll()
             .antMatchers("/admin", "/h2_console/**").hasRole("ADMIN")
+            .antMatchers(*PERMITTED.toTypedArray()).permitAll()
             //private endpoints
             .anyRequest().authenticated()
             .and()

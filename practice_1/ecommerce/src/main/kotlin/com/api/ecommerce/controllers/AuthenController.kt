@@ -22,21 +22,21 @@ class AuthenController {
     @Autowired
     lateinit var userRepository: UserRepository
 
-    @PostMapping("customer/register")
+    @PostMapping("customers/register")
     fun customerRegister(@RequestBody request: RegisterRequest): ResponseEntity<DataResponse<Any>> {
 
         // Validate request body
         val valid = request.validate()
         if (valid != StatusCode.OK) {
             val errorResponse = DataResponse<Any>(valid.code)
-            return ResponseEntity.ok(errorResponse)
+            return ResponseEntity.badRequest().body(errorResponse)
         }
 
         // Check email is exist
         val findUser = userRepository.findUserByEmail(request.email)
         if (findUser != null) {
             val errorResponse = DataResponse<Any>(StatusCode.EmailExist.code)
-            return ResponseEntity.ok(errorResponse)
+            return ResponseEntity.badRequest().body(errorResponse)
         }
 
         // Create admin user and save to db
@@ -48,13 +48,13 @@ class AuthenController {
         return ResponseEntity.ok(DataResponse(HttpStatus.CREATED.value(), response))
     }
 
-    @PostMapping("customer/login")
+    @PostMapping("customers/login")
     fun customerLogin(@RequestBody request: RegisterRequest): ResponseEntity<DataResponse<Any>> {
         // Validate request body
         val valid = request.validate()
         if (valid != StatusCode.OK) {
             val errorResponse = DataResponse<Any>(valid.code)
-            return ResponseEntity.ok(errorResponse)
+            return ResponseEntity.badRequest().body(errorResponse)
         }
 
         // TODO

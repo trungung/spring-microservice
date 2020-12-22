@@ -1,18 +1,26 @@
 package com.api.ecommerce.controllers
 
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.web.servlet.MockMvc
 
-@RunWith(SpringRunner::class)
+
 @ActiveProfiles("test")
-@AutoConfigureMockMvc(addFilters = false)
 open class BaseControllerTest {
-    @Test
-    fun test() {
 
+    @Autowired
+    lateinit var mockMvc: MockMvc
+
+    private val mapper = jacksonObjectMapper()
+
+    fun performTest() {
+
+    }
+
+    @Throws(JsonProcessingException::class)
+    fun toJson(data: Any): String {
+        return mapper.writeValueAsString(data)
     }
 }

@@ -3,17 +3,13 @@ package com.api.ecommerce
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
-import com.api.ecommerce.configuration.H2JpaConfig
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.repositories.UserRepository
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.PropertySource
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.TestPropertySource
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 @RunWith(SpringRunner::class)
 @ActiveProfiles("test")

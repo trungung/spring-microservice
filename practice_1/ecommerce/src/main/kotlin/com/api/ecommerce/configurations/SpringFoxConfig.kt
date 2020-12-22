@@ -1,4 +1,4 @@
-package com.api.ecommerce.configuration
+package com.api.ecommerce.configurations
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.Bean

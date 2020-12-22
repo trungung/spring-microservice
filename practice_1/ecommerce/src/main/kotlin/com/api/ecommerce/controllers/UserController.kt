@@ -58,22 +58,14 @@ class UserController {
     @PostMapping("/customer", MediaType.APPLICATION_JSON_VALUE)
     fun createCustomer(@Valid @RequestBody request: UserRequest): ResponseEntity<User> {
         // Create admin user and save to db
-        val user = User()
-        user.userName = request.userName
-        user.email = request.email
-        user.phone = request.phone
-        user.setCustomerRole()
+        val user = User(request.userName, request.email, request.phone, Role.CUSTOMER.value)
         userRepository.save(user)
         return ResponseEntity.ok(user)
     }
 
     @PutMapping("")
     fun updateUser(@Valid @RequestBody request: UserRequest): ResponseEntity<User> {
-        val user = User()
-        user.userName = request.userName
-        user.email = request.email
-        user.phone = request.phone
-        user.setCustomerRole()
+        val user = User(request.userName, request.email, request.phone, Role.CUSTOMER.value)
         userRepository.save(user)
         return ResponseEntity.ok(user)
     }

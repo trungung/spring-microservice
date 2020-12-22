@@ -1,23 +1,14 @@
 package com.api.ecommerce.dto.requests
 
 import com.api.ecommerce.dto.exceptions.StatusCode
-import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 import java.util.regex.Pattern
 
 class RegisterRequest(
-    @SerializedName("user_name")
     val userName: String,
-
-    @SerializedName("password")
     val password: String,
-
-    @SerializedName("email")
     val email: String,
-
-    @SerializedName("phone")
     val phone: String
-) : Serializable {
+) {
     fun validate(): StatusCode {
 
         if (userName.isEmpty()) return StatusCode.NameNotNull
