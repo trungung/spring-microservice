@@ -4,15 +4,14 @@ import javax.persistence.*
 
 @Entity
 data class Product(
-    var name: String,
-    var description: String,
-    var categoryId: Long,
-    var unit: Int,
-    var price: Double,
+    var name: String = "",
+    var description: String = "",
+    var unit: Int = 0,
+    var price: Double = 0.0,
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     @JoinColumn(name = "category_id", nullable = false)
-    var category: Category,
+    var category: Category = Category(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

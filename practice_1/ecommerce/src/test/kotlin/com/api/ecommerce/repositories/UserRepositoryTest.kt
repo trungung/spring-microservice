@@ -58,7 +58,7 @@ class UserRepositoryTest {
         userRepository.save(user)
 
         // when
-        val found = userRepository.findUserByEmail(user.email)
+        val found = userRepository.findByEmail(user.email)
 
         // then
         assertNotNull(found)
@@ -72,7 +72,7 @@ class UserRepositoryTest {
         user.setAdminRole()
 
         // when
-        val found = userRepository.findUserByEmail(user.email)
+        val found = userRepository.findByEmail(user.email)
 
         // then
         assertNull(found)

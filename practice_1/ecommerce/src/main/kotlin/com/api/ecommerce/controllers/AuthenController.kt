@@ -33,7 +33,7 @@ class AuthenController {
         }
 
         // Check email is exist
-        val findUser = userRepository.findUserByEmail(request.email)
+        val findUser = userRepository.findByEmail(request.email)
         if (findUser != null) {
             val errorResponse = DataResponse<Any>(StatusCode.EmailExist.code)
             return ResponseEntity.badRequest().body(errorResponse)
