@@ -58,6 +58,12 @@ open class BaseControllerTest {
             .contentType(MediaType.APPLICATION_JSON))
     }
 
+//    fun performGetRequest(urlTemplate: String, requestBody: Any): ResultActions {
+//        return mockMvc.perform(MockMvcRequestBuilders.get(urlTemplate).param()
+//            .accept(MediaType.APPLICATION_JSON)
+//            .contentType(MediaType.APPLICATION_JSON))
+//    }
+
     @Throws(JsonProcessingException::class)
     fun toJson(data: Any): String {
         return mapper.writeValueAsString(data)

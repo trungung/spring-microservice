@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @RunWith(SpringRunner::class)
@@ -28,7 +29,36 @@ class ProductControllerTest: BaseControllerTest() {
     private val product = Product("P1", "p", 1, 1000.0, category)
 
     @Test
+    fun filterProductsByCategoryId() {
+        val category1 = Category("1", "1")
+        categoryRepository.save(category1)
+        for (i in 0..10) {
+            val product = Product("${i}", "p", 1, 1000.0, category1)
+            productRepository.save(product)
+        }
+        val category2 = Category("2", "2")
+        categoryRepository.save(category2)
+        for (i in 0..10) {
+            val product = Product("${i}", "p", 1, 1000.0, category1)
+            productRepository.save(product)
+        }
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/products/filter").param("ids", "${category1.id}, ${category2.id}")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn()
+    }
+
+    @Test
     fun getAllProducts() {
+        categoryRepository.save(category)
+        product.category = category
+        productRepository.save(product)
+
         performGetRequest("/products")
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -38,6 +68,7 @@ class ProductControllerTest: BaseControllerTest() {
     @Test
     fun getProductById() {
         categoryRepository.save(category)
+        product.category = category
         productRepository.save(product)
         performGetRequest("/products/${product.id}")
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -68,6 +99,7 @@ class ProductControllerTest: BaseControllerTest() {
     @Test
     fun updateProduct_success() {
         categoryRepository.save(category)
+        product.category = category
         productRepository.save(product)
 
         product.name = "P2"
@@ -84,6 +116,7 @@ class ProductControllerTest: BaseControllerTest() {
     @Test
     fun deleteProduct_success() {
         categoryRepository.save(category)
+        product.category = category
         productRepository.save(product)
         performDelete("/products/${product.id}")
             .andExpect(MockMvcResultMatchers.status().isNoContent)

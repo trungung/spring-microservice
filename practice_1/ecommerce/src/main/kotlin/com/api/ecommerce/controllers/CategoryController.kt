@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("/categories")
@@ -25,7 +24,7 @@ class CategoryController(@Autowired val categoryRepository: CategoryRepository) 
     }
 
     @PostMapping("")
-    fun createCategory(@Valid @RequestBody request: CategoryRequest): ResponseEntity<Category>  {
+    fun createCategory(@RequestBody request: CategoryRequest): ResponseEntity<Category>  {
         // Create category and save to db
         val category = Category(request.name, request.description)
         categoryRepository.save(category)
@@ -33,7 +32,7 @@ class CategoryController(@Autowired val categoryRepository: CategoryRepository) 
     }
 
     @PutMapping("")
-    fun updateCategory(@Valid @RequestBody request: CategoryRequest): ResponseEntity<Category> {
+    fun updateCategory(@RequestBody request: CategoryRequest): ResponseEntity<Category> {
         val category = Category(request.name, request.description)
         categoryRepository.save(category)
         return ResponseEntity.accepted().body(category)

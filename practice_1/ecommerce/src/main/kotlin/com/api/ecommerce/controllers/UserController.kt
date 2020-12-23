@@ -3,23 +3,11 @@ package com.api.ecommerce.controllers
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.dto.requests.UserRequest
-import com.api.ecommerce.errors.ErrorResponse
-import com.api.ecommerce.errors.RecordNotFoundException
 import com.api.ecommerce.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import java.util.*
-import java.util.logging.Logger
-import javax.validation.Valid
-import javax.validation.constraints.Email
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotBlank
-import kotlin.jvm.Throws
 
 @RestController
 @RequestMapping("/users")
@@ -37,7 +25,7 @@ class UserController(@Autowired val userRepository: UserRepository) {
     }
 
     @PostMapping("/admin")
-    fun createAdmin(@Valid @RequestBody request: UserRequest): ResponseEntity<User>  {
+    fun createAdmin(@RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
         val user = User(request.userName, request.email, request.phone, Role.ADMIN.value)
         userRepository.save(user)
@@ -45,7 +33,7 @@ class UserController(@Autowired val userRepository: UserRepository) {
     }
 
     @PostMapping("/business")
-    fun createBusiness(@Valid @RequestBody request: UserRequest): ResponseEntity<User>  {
+    fun createBusiness(@RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
         val user = User(request.userName, request.email, request.phone, Role.BUSINESS.value)
         userRepository.save(user)
@@ -53,7 +41,7 @@ class UserController(@Autowired val userRepository: UserRepository) {
     }
 
     @PostMapping("/customer", MediaType.APPLICATION_JSON_VALUE)
-    fun createCustomer(@Valid @RequestBody request: UserRequest): ResponseEntity<User> {
+    fun createCustomer(@RequestBody request: UserRequest): ResponseEntity<User> {
         // Create admin user and save to db
         val user = User(request.userName, request.email, request.phone, Role.CUSTOMER.value)
         userRepository.save(user)
@@ -61,7 +49,7 @@ class UserController(@Autowired val userRepository: UserRepository) {
     }
 
     @PutMapping("")
-    fun updateUser(@Valid @RequestBody request: UserRequest): ResponseEntity<User> {
+    fun updateUser(@RequestBody request: UserRequest): ResponseEntity<User> {
         val user = User(request.userName, request.email, request.phone, Role.CUSTOMER.value)
         userRepository.save(user)
         return ResponseEntity.accepted().body(user)

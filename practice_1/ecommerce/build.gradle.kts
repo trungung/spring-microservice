@@ -60,6 +60,10 @@ dependencies {
 
 	// H2database
 	testImplementation("com.h2database:h2:1.3.148")
+
+	// https://mvnrepository.com/artifact/org.hibernate/hibernate-jpamodelgen
+	implementation("org.hibernate:hibernate-jpamodelgen:5.4.26.Final")
+	annotationProcessor("org.hibernate:hibernate-jpamodelgen")
 }
 
 tasks.withType<KotlinCompile> {
