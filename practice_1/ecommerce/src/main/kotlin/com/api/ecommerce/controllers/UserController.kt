@@ -64,14 +64,12 @@ class UserController(@Autowired val userRepository: UserRepository) {
     fun updateUser(@Valid @RequestBody request: UserRequest): ResponseEntity<User> {
         val user = User(request.userName, request.email, request.phone, Role.CUSTOMER.value)
         userRepository.save(user)
-        return ResponseEntity.ok(user)
+        return ResponseEntity.accepted().body(user)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable("id") userId: Long): Map<String, Any> {
+    fun deleteUser(@PathVariable("id") userId: Long): ResponseEntity<Any> {
         userRepository.deleteById(userId)
-        val map = LinkedHashMap<String, Any>()
-        map["result"] = "Deleted"
-        return map
+        return ResponseEntity.noContent().build()
     }
 }

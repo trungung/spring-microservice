@@ -6,7 +6,7 @@ import com.api.ecommerce.repositories.CategoryRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.*
+import java.net.URI
 import javax.validation.Valid
 
 @RestController
@@ -29,21 +29,19 @@ class CategoryController(@Autowired val categoryRepository: CategoryRepository) 
         // Create category and save to db
         val category = Category(request.name, request.description)
         categoryRepository.save(category)
-        return ResponseEntity.ok(category)
+        return ResponseEntity.created(URI("/categories/${category.id}")).body(category)
     }
 
     @PutMapping("")
     fun updateCategory(@Valid @RequestBody request: CategoryRequest): ResponseEntity<Category> {
         val category = Category(request.name, request.description)
         categoryRepository.save(category)
-        return ResponseEntity.ok(category)
+        return ResponseEntity.accepted().body(category)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteCategory(@PathVariable("id") categoryId: Long): Map<String, Any> {
+    fun deleteCategory(@PathVariable("id") categoryId: Long): ResponseEntity<Any> {
         categoryRepository.deleteById(categoryId)
-        val map = LinkedHashMap<String, Any>()
-        map["result"] = "Deleted"
-        return map
+        return ResponseEntity.noContent().build()
     }
 }

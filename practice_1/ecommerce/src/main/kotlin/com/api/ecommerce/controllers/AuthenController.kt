@@ -6,6 +6,7 @@ import com.api.ecommerce.dto.exceptions.StatusCode
 import com.api.ecommerce.dto.requests.RegisterRequest
 import com.api.ecommerce.dto.responses.DataResponse
 import com.api.ecommerce.dto.responses.RegisterResponse
+import com.api.ecommerce.dto.responses.UserResponse
 import com.api.ecommerce.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -57,7 +58,7 @@ class AuthenController(@Autowired val userRepository: UserRepository) {
         // TODO
 
         // Create Response data
-        val response = RegisterResponse(request.userName, request.email, request.phone)
+        val response = UserResponse(request.userName, request.email, request.phone)
         return ResponseEntity.ok(response)
     }
 }

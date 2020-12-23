@@ -1,4 +1,6 @@
 package com.api.ecommerce.dto.responses
 
-class UserResponse {
-}
+class UserResponse(
+    val userName: String,
+    val email: String,
+    val phone: String)
