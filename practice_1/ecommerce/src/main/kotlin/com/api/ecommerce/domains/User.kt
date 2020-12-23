@@ -28,10 +28,9 @@ data class User(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val userId: Long = -1
-) {
+    val userId: Long = 0) {
 
-    constructor() : this("", "", "", 0, -1)
+    constructor() : this("", "", "", 0, 0)
 
     constructor(userName: String, email: String, phone: String, role: Int) : this() {
         this.userName = userName

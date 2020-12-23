@@ -7,6 +7,7 @@ import com.api.ecommerce.errors.ErrorResponse
 import com.api.ecommerce.errors.RecordNotFoundException
 import com.api.ecommerce.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -22,11 +23,7 @@ import kotlin.jvm.Throws
 
 @RestController
 @RequestMapping("/users")
-@Validated
-class UserController {
-
-    @Autowired
-    lateinit var userRepository: UserRepository
+class UserController(@Autowired val userRepository: UserRepository) {
 
     @GetMapping("")
     fun getAllUsers(): List<User> {

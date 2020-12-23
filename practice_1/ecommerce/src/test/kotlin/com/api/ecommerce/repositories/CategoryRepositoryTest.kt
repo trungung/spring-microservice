@@ -24,7 +24,7 @@ class CategoryRepositoryTest {
         // when
         val found = categoryRepository.findById(category.id)
         // then
-        Assert.assertNotNull(found)
+        Assert.assertTrue(found.isPresent)
         Assert.assertEquals(found.get().id, category.id)
     }
 
@@ -38,7 +38,7 @@ class CategoryRepositoryTest {
         val found = categoryRepository.findById(category.id)
 
         // then
-        Assert.assertNotNull(found)
+        Assert.assertTrue(found.isPresent)
         Assert.assertEquals(found.get().name, category.name)
     }
 
@@ -55,7 +55,7 @@ class CategoryRepositoryTest {
         val found = categoryRepository.findById(category.id)
 
         // then
-        Assert.assertNotNull(found)
+        Assert.assertTrue(found.isPresent)
         Assert.assertEquals(found.get().name, category.name)
     }
 
@@ -65,12 +65,15 @@ class CategoryRepositoryTest {
         val category = Category("abc", "abc")
         categoryRepository.save(category)
 
+        var found = categoryRepository.findById(category.id)
+
+        Assert.assertTrue(found.isPresent)
         categoryRepository.delete(category)
 
         // when
-        val found = categoryRepository.findById(category.id)
+        found = categoryRepository.findById(category.id)
 
         // then
-        Assert.assertNull(found)
+        Assert.assertTrue(!found.isPresent)
     }
 }

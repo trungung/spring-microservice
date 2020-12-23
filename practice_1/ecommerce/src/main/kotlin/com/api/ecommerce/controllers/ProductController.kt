@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/products")
-class ProductController {
-    @Autowired
-    lateinit var productRepository: ProductRepository
+class ProductController(@Autowired val productRepository: ProductRepository) {
 
     @GetMapping("")
     fun getAllProducts(): List<Product> {

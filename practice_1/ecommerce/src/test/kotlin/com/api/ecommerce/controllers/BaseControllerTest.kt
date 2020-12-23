@@ -1,20 +1,34 @@
 package com.api.ecommerce.controllers
 
+import com.api.ecommerce.repositories.UserRepository
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.junit.Before
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
 
 
 @ActiveProfiles("test")
 open class BaseControllerTest {
 
     @Autowired
+    lateinit var ctx: WebApplicationContext
+
     lateinit var mockMvc: MockMvc
+
+    @Autowired
+    lateinit var userRepository: UserRepository
+
+    @Before
+    fun setup() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build()
+    }
 
     private val mapper = jacksonObjectMapper()
 

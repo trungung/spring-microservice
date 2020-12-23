@@ -3,6 +3,7 @@ package com.api.ecommerce.domains
 import javax.persistence.*
 
 @Entity
+@Table(name="\"tb_product\"")
 data class Product(
     var name: String = "",
     var description: String = "",
@@ -15,4 +16,4 @@ data class Product(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long = -1)
+    val id: Long = 0)

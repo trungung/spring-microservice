@@ -5,6 +5,7 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
 
 @Entity
+@Table(name="\"tb_category\"")
 data class Category(
 
     @NotEmpty
@@ -20,4 +21,4 @@ data class Category(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long = -1)
+    val id: Long = 0)

@@ -1,22 +1,26 @@
 package com.api.ecommerce.controllers
 
+import com.api.ecommerce.dto.requests.CategoryRequest
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @RunWith(SpringRunner::class)
-@WebMvcTest(CategoryController::class)
-@AutoConfigureMockMvc(addFilters = false)
-internal class CategoryControllerTest: BaseControllerTest() {
+@SpringBootTest
+class CategoryControllerTest: BaseControllerTest() {
 
     @Test
-    fun getCategoryRepository() {
-    }
-
-    @Test
-    fun setCategoryRepository() {
+    fun createCategory_success() {
+        val request = CategoryRequest("abc", "abc")
+        performPostRequest("/categories", request)
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name))
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn()
     }
 
     @Test

@@ -1,22 +1,17 @@
 package com.api.ecommerce.controllers
 
 import com.api.ecommerce.domains.Category
-import com.api.ecommerce.domains.Role
-import com.api.ecommerce.domains.User
 import com.api.ecommerce.dto.requests.CategoryRequest
-import com.api.ecommerce.dto.requests.UserRequest
 import com.api.ecommerce.repositories.CategoryRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.LinkedHashMap
+import java.util.*
 import javax.validation.Valid
 
 @RestController
 @RequestMapping("/categories")
-class CategoryController {
-    @Autowired
-    lateinit var categoryRepository: CategoryRepository
+class CategoryController(@Autowired val categoryRepository: CategoryRepository) {
 
     @GetMapping("")
     fun getAllCategories(): List<Category> {
@@ -29,7 +24,7 @@ class CategoryController {
         return ResponseEntity.ok(category)
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     fun createCategory(@Valid @RequestBody request: CategoryRequest): ResponseEntity<Category>  {
         // Create category and save to db
         val category = Category(request.name, request.description)

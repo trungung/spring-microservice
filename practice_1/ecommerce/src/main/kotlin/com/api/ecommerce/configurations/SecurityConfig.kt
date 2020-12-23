@@ -17,20 +17,17 @@ import javax.servlet.http.HttpServletResponse
 class SecurityConfig: WebSecurityConfigurerAdapter() {
 
     private val PERMITTED = listOf(
-        "/v1/auth/person",
-        "/v1/auth/group",
-        "/v1/time",
-        "/v1/jwt",
-        "/v1/debug/**",
-        "/v2/api-docs",
         "/configuration/**",
         "/swagger-resources/**",
-        "/swagger-ui.html",
+        "/swagger-ui/**",
         "/webjars/**",
         "/api-docs/**",
         "/health",
         "/info",
+        "/users",
         "/users/*",
+        "/categories/*",
+        "/products/*",
         "/customers/*"
     )
 
@@ -44,7 +41,7 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .and()
         // Set unauthorized requests exception handler
         http.exceptionHandling()
-            .authenticationEntryPoint { request: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
+            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
                 response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED,
                     ex.message

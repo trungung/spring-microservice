@@ -8,22 +8,19 @@ import com.api.ecommerce.dto.responses.DataResponse
 import com.api.ecommerce.dto.responses.RegisterResponse
 import com.api.ecommerce.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 
 @RestController
 @RequestMapping("/")
-class AuthenController {
-
-    @Autowired
-    lateinit var userRepository: UserRepository
+class AuthenController(@Autowired val userRepository: UserRepository) {
 
     @PostMapping("customers/register")
-    fun customerRegister(@RequestBody request: RegisterRequest): ResponseEntity<DataResponse<Any>> {
+    fun customerRegister(@RequestBody request: RegisterRequest): ResponseEntity<Any> {
 
         // Validate request body
         val valid = request.validate()
@@ -45,11 +42,11 @@ class AuthenController {
 
         // Create Response data
         val response = RegisterResponse(request.userName, request.email, request.phone)
-        return ResponseEntity.ok(DataResponse(HttpStatus.CREATED.value(), response))
+        return ResponseEntity.created(URI("/users/${user.userId}")).body(response)
     }
 
     @PostMapping("customers/login")
-    fun customerLogin(@RequestBody request: RegisterRequest): ResponseEntity<DataResponse<Any>> {
+    fun customerLogin(@RequestBody request: RegisterRequest): ResponseEntity<Any> {
         // Validate request body
         val valid = request.validate()
         if (valid != StatusCode.OK) {
@@ -61,6 +58,6 @@ class AuthenController {
 
         // Create Response data
         val response = RegisterResponse(request.userName, request.email, request.phone)
-        return ResponseEntity.ok(DataResponse(HttpStatus.CREATED.value(), response))
+        return ResponseEntity.ok(response)
     }
 }
