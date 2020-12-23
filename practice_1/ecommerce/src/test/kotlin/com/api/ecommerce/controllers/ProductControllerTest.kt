@@ -4,6 +4,7 @@ import com.api.ecommerce.domains.Category
 import com.api.ecommerce.domains.Product
 import com.api.ecommerce.dto.requests.CategoryRequest
 import com.api.ecommerce.dto.requests.ProductRequest
+import com.api.ecommerce.repositories.CategoryRepository
 import com.api.ecommerce.repositories.ProductRepository
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +21,9 @@ class ProductControllerTest: BaseControllerTest() {
     @Autowired
     lateinit var productRepository: ProductRepository
 
+    @Autowired
+    lateinit var categoryRepository: CategoryRepository
+
     private val category = Category("C", "c")
     private val product = Product("P1", "p", 1, 1000.0, category)
 
@@ -33,6 +37,7 @@ class ProductControllerTest: BaseControllerTest() {
 
     @Test
     fun getProductById() {
+        categoryRepository.save(category)
         productRepository.save(product)
         performGetRequest("/products/${product.id}")
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -43,7 +48,8 @@ class ProductControllerTest: BaseControllerTest() {
 
     @Test
     fun createProduct_success() {
-        val request = ProductRequest("abc", "abc", 10, 1000.0)
+        categoryRepository.save(category)
+        val request = ProductRequest("abc", "abc", 10, 1000.0, category.id)
         performPostRequest("/products", request)
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name))
@@ -52,12 +58,21 @@ class ProductControllerTest: BaseControllerTest() {
     }
 
     @Test
+    fun createProduct_with_notFound_category() {
+        val request = ProductRequest("abc", "abc", 10, 1000.0, category.id)
+        performPostRequest("/products", request)
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andReturn()
+    }
+
+    @Test
     fun updateProduct_success() {
+        categoryRepository.save(category)
         productRepository.save(product)
 
         product.name = "P2"
         product.unit = 0
-        val request = ProductRequest(product.name, product.description, product.unit, product.price)
+        val request = ProductRequest(product.name, product.description, product.unit, product.price, category.id)
         performPutRequest("/products", request)
             .andExpect(MockMvcResultMatchers.status().isAccepted)
             .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name))
@@ -68,6 +83,7 @@ class ProductControllerTest: BaseControllerTest() {
 
     @Test
     fun deleteProduct_success() {
+        categoryRepository.save(category)
         productRepository.save(product)
         performDelete("/products/${product.id}")
             .andExpect(MockMvcResultMatchers.status().isNoContent)

@@ -4,8 +4,10 @@ import com.api.ecommerce.domains.Category
 import com.api.ecommerce.domains.Product
 import com.api.ecommerce.dto.requests.CategoryRequest
 import com.api.ecommerce.dto.requests.ProductRequest
+import com.api.ecommerce.repositories.CategoryRepository
 import com.api.ecommerce.repositories.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
@@ -14,7 +16,9 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/products")
-class ProductController(@Autowired val productRepository: ProductRepository) {
+class ProductController(
+    @Autowired val productRepository: ProductRepository,
+    @Autowired val categoryRepository: CategoryRepository) {
 
     @GetMapping("")
     fun getAllProducts(): List<Product> {
@@ -28,8 +32,12 @@ class ProductController(@Autowired val productRepository: ProductRepository) {
     }
 
     @PostMapping("")
-    fun createProduct(@Valid @RequestBody request: ProductRequest): ResponseEntity<Product> {
-        // Create category and save to db
+    fun createProduct(@Valid @RequestBody request: ProductRequest): ResponseEntity<Any> {
+        val category = categoryRepository.findById(request.categoryId)
+        if (!category.isPresent) {
+            return ResponseEntity.notFound().build()
+        }
+
         val product = Product(request.name, request.description, request.unit, request.price)
         productRepository.save(product)
         return ResponseEntity.created(URI("/products/${product.id}")).body(product)
@@ -37,6 +45,11 @@ class ProductController(@Autowired val productRepository: ProductRepository) {
 
     @PutMapping("")
     fun updateProduct(@Valid @RequestBody request: ProductRequest): ResponseEntity<Product> {
+        val category = categoryRepository.findById(request.categoryId)
+        if (!category.isPresent) {
+            return ResponseEntity.notFound().build()
+        }
+
         val product = Product(request.name, request.description, request.unit, request.price)
         productRepository.save(product)
         return ResponseEntity.accepted().body(product)
