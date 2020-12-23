@@ -24,7 +24,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.*
 
+@RunWith(SpringRunner::class)
 @WebMvcTest(UserController::class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest: BaseControllerTest() {
 
     @MockBean
@@ -33,10 +35,7 @@ class UserControllerTest: BaseControllerTest() {
     @Test
     fun getAllUsers() {
         Mockito.`when`(userRepository.findAll()).thenReturn(Collections.emptyList())
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/users")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        performGetRequest("/users")
             .andExpect(status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andReturn()
@@ -46,10 +45,7 @@ class UserControllerTest: BaseControllerTest() {
     fun getUserById() {
         val user = User()
         Mockito.`when`(userRepository.findById(anyLong())).thenReturn(Optional.of(user))
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/users/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON))
+        performGetRequest("/users/1")
             .andExpect(status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andReturn()
@@ -60,10 +56,7 @@ class UserControllerTest: BaseControllerTest() {
         val request = UserRequest("abc", "abc@gmail.com", "123456789")
         val user = User()
         Mockito.`when`(userRepository.save(any(User::class.java))).thenReturn(user)
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/admin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(request)))
+        performPostRequest("/users/admin", request)
             .andExpect(status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andReturn()
@@ -71,20 +64,14 @@ class UserControllerTest: BaseControllerTest() {
 
     @Test
     fun createAdminUser_invalid_request() {
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/admin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson("request")))
+        performPostRequest("/users/admin", "request")
             .andExpect(status().isBadRequest)
             .andReturn()
     }
 
     @Test
     fun createAdminUser_emptyBody() {
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/admin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(""))
+        performPostRequest("/users/admin", "")
             .andExpect(status().isBadRequest)
             .andReturn()
     }
