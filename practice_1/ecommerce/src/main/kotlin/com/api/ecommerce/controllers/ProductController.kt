@@ -3,6 +3,7 @@ package com.api.ecommerce.controllers
 import com.api.ecommerce.domains.Category
 import com.api.ecommerce.domains.Product
 import com.api.ecommerce.dto.requests.CategoryRequest
+import com.api.ecommerce.dto.requests.ProductRequest
 import com.api.ecommerce.repositories.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -27,16 +28,16 @@ class ProductController(@Autowired val productRepository: ProductRepository) {
     }
 
     @PostMapping("")
-    fun createProduct(@Valid @RequestBody request: CategoryRequest): ResponseEntity<Product> {
+    fun createProduct(@Valid @RequestBody request: ProductRequest): ResponseEntity<Product> {
         // Create category and save to db
-        val product = Product(request.name, request.description)
+        val product = Product(request.name, request.description, request.unit, request.price)
         productRepository.save(product)
         return ResponseEntity.created(URI("/products/${product.id}")).body(product)
     }
 
     @PutMapping("")
-    fun updateProduct(@Valid @RequestBody request: CategoryRequest): ResponseEntity<Product> {
-        val product = Product(request.name, request.description)
+    fun updateProduct(@Valid @RequestBody request: ProductRequest): ResponseEntity<Product> {
+        val product = Product(request.name, request.description, request.unit, request.price)
         productRepository.save(product)
         return ResponseEntity.accepted().body(product)
     }

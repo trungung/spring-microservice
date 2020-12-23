@@ -39,6 +39,19 @@ open class BaseControllerTest {
             .content(toJson(data)))
     }
 
+    fun performPutRequest(urlTemplate: String, data: Any): ResultActions {
+        return mockMvc.perform(MockMvcRequestBuilders.put(urlTemplate)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(toJson(data)))
+    }
+
+    fun performDelete(urlTemplate: String): ResultActions {
+        return mockMvc.perform(MockMvcRequestBuilders.delete(urlTemplate)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+    }
+
     fun performGetRequest(urlTemplate: String): ResultActions {
         return mockMvc.perform(MockMvcRequestBuilders.get(urlTemplate)
             .accept(MediaType.APPLICATION_JSON)

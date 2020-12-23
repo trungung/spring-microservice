@@ -35,7 +35,7 @@ class UserControllerTest: BaseControllerTest() {
     fun getUserById() {
         val user = User("userName", "email", "123456789", Role.CUSTOMER.value)
         userRepository.save(user)
-        performGetRequest("/users/1")
+        performGetRequest("/users/${user.userId}")
             .andExpect(status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andReturn()
