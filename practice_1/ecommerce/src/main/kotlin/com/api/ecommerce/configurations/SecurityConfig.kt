@@ -5,18 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.AuthenticationException
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
@@ -25,12 +21,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig: WebSecurityConfigurerAdapter() {
-
-    @Autowired
-    lateinit var authenticationFilter: JWTAuthenticationFilter
-
-    @Autowired
-    lateinit var userDetailsService: UserDetailsService
 
     private val PERMITTED = listOf(
         "/configuration/**",
@@ -50,10 +40,9 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(security: AuthenticationManagerBuilder) {
         security
-            .userDetailsService(userDetailsService)
+            .userDetailsService(userDetailsService())
             .passwordEncoder(passwordEncoder())
     }
-
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
@@ -90,8 +79,7 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .antMatchers(*PERMITTED.toTypedArray()).permitAll()
             .anyRequest().authenticated()
             .and()
-            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-
+            .addFilterBefore(JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
     }
 
     @Autowired
@@ -108,6 +96,12 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
         return BCryptPasswordEncoder()
     }
 
+    @Bean
+    @Throws(Exception::class)
+    override fun authenticationManagerBean(): AuthenticationManager {
+        return super.authenticationManagerBean()
+    }
+    
     // Define error messages
     companion object {
         const val NO_AUTH = "noauth"

@@ -25,7 +25,7 @@ class UserControllerTest: BaseControllerTest() {
 
     @Test
     fun getUserById() {
-        val user = User("userName", "email", "123456789", Role.CUSTOMER.value)
+        val user = User("userName", "email@gmail.com", "123456789", Role.CUSTOMER.value)
         userRepository.save(user)
         performGetRequest("/users/${user.userId}")
             .andExpect(status().isOk)
@@ -35,7 +35,7 @@ class UserControllerTest: BaseControllerTest() {
 
     @Test
     fun createAdminUser_success() {
-        val user = User("userName", "email", "123456789", Role.ADMIN.value)
+        val user = User("userName", "email@gmail.com", "123456789", Role.ADMIN.value)
         val request = UserRequest(user.userName, user.email, user.phone)
         userRepository.save(user)
         performPostRequest("/users/admin", request)

@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
-class AuthenControllerTest: BaseControllerTest() {
+class AuthenticationControllerTest: BaseControllerTest() {
 
     @Test
     fun customerRegister_success() {

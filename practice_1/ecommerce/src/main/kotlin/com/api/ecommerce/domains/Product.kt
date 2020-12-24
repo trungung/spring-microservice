@@ -13,7 +13,7 @@ data class Product(
     var price: Double = 0.0,
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false, updatable = false)
+    @JoinColumn(name = "category_id")
     var category: Category = Category(),
 
     @Id

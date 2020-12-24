@@ -59,8 +59,8 @@ class UserRepositoryTest {
         val found = userRepository.findByEmail(user.email)
 
         // then
-        assertNotNull(found)
-        assertEquals(found?.email, user.email)
+        assertTrue(found.isPresent)
+        assertEquals(found.get().email, user.email)
     }
 
     @Test
@@ -72,7 +72,7 @@ class UserRepositoryTest {
         val found = userRepository.findByEmail(user.email)
 
         // then
-        assertNull(found)
+        assertTrue(found.isPresent)
     }
 
 

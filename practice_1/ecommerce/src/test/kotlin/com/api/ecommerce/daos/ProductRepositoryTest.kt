@@ -24,6 +24,7 @@ class ProductRepositoryTest {
     fun whenCreateNewProductWithCategory_success() {
         // given
         val category = Category("C", "c")
+        categoryRepository.save(category)
         val product = Product("P1", "p", 1, 1000.0, category)
         productRepository.save(product)
 
@@ -42,6 +43,7 @@ class ProductRepositoryTest {
     fun whenFindById_thenReturnItem() {
         // given
         val category = Category("C", "c")
+        categoryRepository.save(category)
         val product = Product("P1", "p", 1, 1000.0, category)
         productRepository.save(product)
 
@@ -57,6 +59,7 @@ class ProductRepositoryTest {
     fun whenUpdateProduct_thenReturnProduct() {
         // given
         val category = Category("C", "c")
+        categoryRepository.save(category)
         val product = Product("P1", "p", 1, 1000.0, category)
         productRepository.save(product)
 
@@ -75,6 +78,7 @@ class ProductRepositoryTest {
     fun whenDeleteProduct() {
         // given
         val category = Category("C", "c")
+        categoryRepository.save(category)
         val product = Product("P1", "p", 1, 1000.0, category)
         productRepository.save(product)
 

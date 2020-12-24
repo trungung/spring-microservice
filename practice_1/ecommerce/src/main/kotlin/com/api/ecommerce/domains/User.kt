@@ -14,20 +14,16 @@ import javax.validation.constraints.NotBlank
 @Table(name="\"tb_user\"")
 data class User(
 
-    @NotBlank(message = "Name is mandatory")
-    @Column(name = "user_name", nullable = false, unique = true)
+    @Column(nullable = false)
     var userName: String,
 
-    @Email(message = "Email should be valid")
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     var email: String,
 
-    @Min(value = 9, message="Phone number must be equal or greater than 9")
-    @Max(value = 12, message="Phone number must be equal or less than 12")
-    @Column(name = "phone", nullable = false, unique = true)
+    @Column(nullable = false)
     var phone: String,
 
-    @Column(name = "role", nullable = false)
+    @Column(nullable = false)
     var role: String = Role.CUSTOMER.value,
 
     @Id

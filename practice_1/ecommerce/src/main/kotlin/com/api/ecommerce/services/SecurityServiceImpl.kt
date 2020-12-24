@@ -57,7 +57,7 @@ class SecurityServiceImpl: SecurityService, UserDetailsService {
 
     @Transactional
     override fun loadUserByUsername(username: String): User {
-        return userRepository.findByUsername(username)
+        return userRepository.findByUserName(username)
             .orElseThrow { UsernameNotFoundException("Invalid username or password.") }
     }
 }
