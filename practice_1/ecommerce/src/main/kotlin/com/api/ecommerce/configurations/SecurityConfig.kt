@@ -1,8 +1,12 @@
 package com.api.ecommerce.configurations
 
+import com.api.ecommerce.securities.JWTAuthenticationFilter
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -10,11 +14,23 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.AuthenticationException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig: WebSecurityConfigurerAdapter() {
+
+    @Autowired
+    lateinit var authenticationFilter: JWTAuthenticationFilter
+
+    @Autowired
+    lateinit var userDetailsService: UserDetailsService
 
     private val PERMITTED = listOf(
         "/configuration/**",
@@ -32,33 +48,50 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
     )
 
     @Throws(Exception::class)
+    override fun configure(security: AuthenticationManagerBuilder) {
+        security
+            .userDetailsService(userDetailsService)
+            .passwordEncoder(passwordEncoder())
+    }
+
+
+    @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        // Enable CORS and disable CSRF
-        http.cors().and().csrf().disable()
-        // Set session management to statelessz
-        http.sessionManagement()
+        // 1) Enabling Frames because it's required for h2. Note: this shouldn't be exposed to prod.
+        // 2) Setting exception handler in Filters
+        // 3) Allowing the following actions without authentication:
+        // 3.a) Processing OPTIONS for all endpoints
+        // 3.b) Processing POST on /login
+        // 3.c) Accessing to h2 web console. Note: this shouldn't be exposed to prod.
+        // 4) All the other requests need to be authenticated
+        // 5) Adding to the filter chain the JWT Authentication Filter
+        // 1) Enabling Frames because it's required for h2. Note: this shouldn't be exposed to prod.
+        // 2) Setting exception handler in Filters
+        // 3) Allowing the following actions without authentication:
+        // 3.a) Processing OPTIONS for all endpoints
+        // 3.b) Processing POST on /login
+        // 3.c) Accessing to h2 web console. Note: this shouldn't be exposed to prod.
+        // 4) All the other requests need to be authenticated
+        // 5) Adding to the filter chain the JWT Authentication Filter
+        http
+            .csrf()
+            .disable()
+            .headers()
+            .frameOptions()
+            .sameOrigin()
+            .and()
+            .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-        // Set unauthorized requests exception handler
-        http.exceptionHandling()
-            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
-                response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    ex.message
-                )
-            }
-            .and()
-
-        http.authorizeRequests()
-            // public endpoints
-            .antMatchers("/admin", "/h2_console/**").hasRole("ADMIN")
+            .authorizeRequests()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/login").permitAll()
+            .antMatchers("/h2", "/h2/**", "/error").permitAll()
             .antMatchers(*PERMITTED.toTypedArray()).permitAll()
-            //private endpoints
             .anyRequest().authenticated()
             .and()
-            .formLogin().loginPage("/login").permitAll()
-            .and()
-            .logout().permitAll()
+            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+
     }
 
     @Autowired
@@ -68,6 +101,11 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .withUser("user").password("user").roles("USER")
             .and()
             .withUser("admin").password("admin").roles("ADMIN")
+    }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder? {
+        return BCryptPasswordEncoder()
     }
 
     // Define error messages

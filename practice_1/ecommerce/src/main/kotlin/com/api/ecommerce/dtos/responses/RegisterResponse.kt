@@ -1,6 +1,6 @@
-package com.api.ecommerce.dto.responses
+package com.api.ecommerce.dtos.responses
 
-class UserResponse(
+class RegisterResponse(
     val userName: String,
     val email: String,
     val phone: String)

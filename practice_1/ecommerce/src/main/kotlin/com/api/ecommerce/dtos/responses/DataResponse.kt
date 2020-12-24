@@ -1,4 +1,4 @@
-package com.api.ecommerce.dto.responses
+package com.api.ecommerce.dtos.responses
 
 import java.io.Serializable
 

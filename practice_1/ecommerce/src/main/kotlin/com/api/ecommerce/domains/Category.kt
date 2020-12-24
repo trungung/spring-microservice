@@ -1,15 +1,13 @@
 package com.api.ecommerce.domains
 
 import javax.persistence.*
-import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
 
 @Entity
 @Table(name="\"tb_category\"")
 data class Category(
 
-    @NotEmpty
-    @Column
+    @Column(nullable = false)
     @Size(max = 25)
     var name: String = "",
 

@@ -1,7 +1,8 @@
 package com.api.ecommerce
 
 import com.api.ecommerce.domains.User
-import com.api.ecommerce.repositories.UserRepository
+import com.api.ecommerce.daos.UserRepository
+import com.api.ecommerce.domains.Role
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -19,7 +20,7 @@ class EcommerceApplication {
 		user.userName = "ADMIN"
 		user.email = "admin@admin.com"
 		user.phone = "123456789"
-		user.setAdminRole()
+		user.role = Role.ADMIN.value
 		userRepository.save(user)
 	}
 }

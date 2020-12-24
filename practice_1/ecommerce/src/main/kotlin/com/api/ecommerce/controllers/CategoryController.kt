@@ -1,8 +1,8 @@
 package com.api.ecommerce.controllers
 
 import com.api.ecommerce.domains.Category
-import com.api.ecommerce.dto.requests.CategoryRequest
-import com.api.ecommerce.repositories.CategoryRepository
+import com.api.ecommerce.dtos.requests.CategoryRequest
+import com.api.ecommerce.daos.CategoryRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

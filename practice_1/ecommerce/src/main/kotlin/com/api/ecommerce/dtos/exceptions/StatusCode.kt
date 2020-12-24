@@ -1,4 +1,4 @@
-package com.api.ecommerce.dto.exceptions
+package com.api.ecommerce.dtos.exceptions
 
 enum class StatusCode(val code: Int) {
 

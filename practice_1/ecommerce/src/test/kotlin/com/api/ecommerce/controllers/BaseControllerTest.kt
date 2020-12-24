@@ -1,6 +1,6 @@
 package com.api.ecommerce.controllers
 
-import com.api.ecommerce.repositories.UserRepository
+import com.api.ecommerce.daos.UserRepository
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.Before
@@ -26,7 +26,7 @@ open class BaseControllerTest {
     lateinit var userRepository: UserRepository
 
     @Before
-    fun setup() {
+    open fun setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build()
     }
 

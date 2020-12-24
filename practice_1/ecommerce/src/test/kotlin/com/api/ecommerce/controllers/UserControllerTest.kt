@@ -2,22 +2,14 @@ package com.api.ecommerce.controllers
 
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
-import com.api.ecommerce.dto.requests.UserRequest
-import com.api.ecommerce.repositories.UserRepository
+import com.api.ecommerce.dtos.requests.UserRequest
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.anyLong
-import org.mockito.Mockito
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.util.*
 
 @RunWith(SpringRunner::class)
 @SpringBootTest

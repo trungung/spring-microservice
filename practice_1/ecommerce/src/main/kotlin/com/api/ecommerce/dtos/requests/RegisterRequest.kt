@@ -1,6 +1,6 @@
-package com.api.ecommerce.dto.requests
+package com.api.ecommerce.dtos.requests
 
-import com.api.ecommerce.dto.exceptions.StatusCode
+import com.api.ecommerce.dtos.exceptions.StatusCode
 import java.util.regex.Pattern
 
 class RegisterRequest(

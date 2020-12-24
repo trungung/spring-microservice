@@ -1,5 +1,6 @@
-package com.api.ecommerce.repositories
+package com.api.ecommerce.daos
 
+import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
 import org.junit.Assert.*
 import org.junit.Test
@@ -24,8 +25,7 @@ class UserRepositoryTest {
     @Test
     fun whenCreateNewUser() {
         // given
-        val user = User("userName", "email", "123456789")
-        user.setAdminRole()
+        val user = User("userName", "email", "123456789", Role.ADMIN.value)
         userRepository.save(user)
 
         // when
@@ -37,8 +37,7 @@ class UserRepositoryTest {
     @Test
     fun whenFindById_thenReturnUser() {
         // given
-        val user = User("userName", "email", "123456789")
-        user.setAdminRole()
+        val user = User("userName", "email", "123456789", Role.ADMIN.value)
         entityManager.persist<Any>(user)
         entityManager.flush()
 
@@ -53,8 +52,7 @@ class UserRepositoryTest {
     @Test
     fun whenFindByEmail_thenReturnUser() {
         // given
-        val user = User("userName", "email", "123456789")
-        user.setAdminRole()
+        val user = User("userName", "email", "123456789", Role.ADMIN.value)
         userRepository.save(user)
 
         // when
@@ -68,8 +66,7 @@ class UserRepositoryTest {
     @Test
     fun whenFindByEmail_notExist_thenReturnEmpty() {
         // given
-        val user = User("userName", "email", "123456789")
-        user.setAdminRole()
+        val user = User("userName", "email", "123456789", Role.ADMIN.value)
 
         // when
         val found = userRepository.findByEmail(user.email)

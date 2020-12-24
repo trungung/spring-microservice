@@ -1,38 +1,59 @@
 package com.api.ecommerce.controllers
 
+import com.api.ecommerce.daos.CategoryRepository
 import com.api.ecommerce.domains.Product
-import com.api.ecommerce.dto.requests.ProductRequest
-import com.api.ecommerce.dto.responses.ProductsSpecifications
-import com.api.ecommerce.repositories.CategoryRepository
-import com.api.ecommerce.repositories.ProductRepository
+import com.api.ecommerce.dtos.requests.ProductRequest
+import com.api.ecommerce.services.ProductService
+import com.api.ecommerce.services.SecurityService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
+
 @RestController
 @RequestMapping("/products")
 class ProductController(
-    @Autowired val productRepository: ProductRepository,
-    @Autowired val categoryRepository: CategoryRepository) {
+    @Autowired
+    val productService: ProductService,
+    @Autowired
+    val categoryRepository: CategoryRepository,
+    @Autowired
+    val securityService: SecurityService
+) {
 
     @GetMapping("")
-    fun getAllProducts(): List<Product> {
-        return productRepository.findAll().distinct()
-    }
-
-    @GetMapping("/filter")
-    fun filterProductsByCategoryId(@RequestParam ids: List<Long>): ResponseEntity<Any> {
-        val products = productRepository.findAll(ProductsSpecifications.hasCategories(ids)).distinct()
+    fun retrieveAllProducts(pageable: Pageable): ResponseEntity<Any> {
+        // Getting all products in application...
+        val products: Page<Product> = productService.getAllProducts(pageable)
         return ResponseEntity.ok(products)
     }
 
-
     @GetMapping("/{id}")
-    fun getProduct(@PathVariable("id") productId : Long): ResponseEntity<Product> {
-        val product = productRepository.findById(productId).get()
+    fun retrieveProduct(@PathVariable("id") productId : Long): ResponseEntity<Any> {
+        // Getting the requiring product
+        val product = productService.getProductById(productId)
+        if (!product.isPresent) {
+            return ResponseEntity.notFound().build()
+        }
+
         return ResponseEntity.ok(product)
     }
+
+
+    @GetMapping("/filter")
+    fun filterProductsByCategoryId(@RequestParam categoryId: Long, pageable: Pageable): ResponseEntity<Any> {
+        val category = categoryRepository.findById(categoryId)
+        if (!category.isPresent) {
+            return ResponseEntity.notFound().build()
+        }
+
+        val products = productService.getAllProducts(category.get(), pageable)
+        return ResponseEntity.ok(products)
+    }
+
 
     @PostMapping("")
     fun createProduct(@RequestBody request: ProductRequest): ResponseEntity<Any> {
@@ -40,27 +61,29 @@ class ProductController(
         if (!category.isPresent) {
             return ResponseEntity.notFound().build()
         }
-
-        val product = Product(request.name, request.description, request.unit, request.price, category.get())
-        productRepository.save(product)
+        val product = productService.createProduct(request.name, request.description, request.unit, request.price, category.get())
         return ResponseEntity.created(URI("/products/${product.id}")).body(product)
     }
 
-    @PutMapping("")
-    fun updateProduct(@RequestBody request: ProductRequest): ResponseEntity<Product> {
-        val category = categoryRepository.findById(request.categoryId)
-        if (!category.isPresent) {
+    @PutMapping("/{id}")
+    fun updateProduct(@PathVariable id: Long, @RequestBody request: ProductRequest): ResponseEntity<Product> {
+        val productOptional = productService.getProductById(id)
+        if (!productOptional.isPresent) {
             return ResponseEntity.notFound().build()
         }
 
-        val product = Product(request.name, request.description, request.unit, request.price, category.get())
-        productRepository.save(product)
+        val product = productOptional.get()
+        productService.updateProduct(product, request.name, request.description, request.unit, request.price)
         return ResponseEntity.accepted().body(product)
     }
 
     @DeleteMapping("/{id}")
     fun deleteProduct(@PathVariable("id") productId: Long): ResponseEntity<Any> {
-        productRepository.deleteById(productId)
+        val product = productService.getProductById(productId)
+        if (!product.isPresent) {
+            return ResponseEntity.notFound().build()
+        }
+        productService.deleteProduct(product.get())
         return ResponseEntity.noContent().build()
     }
 }

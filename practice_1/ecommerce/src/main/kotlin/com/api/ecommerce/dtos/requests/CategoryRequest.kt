@@ -1,4 +1,4 @@
-package com.api.ecommerce.dto.requests
+package com.api.ecommerce.dtos.requests
 
 class CategoryRequest(
     val name: String,

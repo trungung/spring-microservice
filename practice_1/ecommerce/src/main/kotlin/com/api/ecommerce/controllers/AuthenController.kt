@@ -2,12 +2,12 @@ package com.api.ecommerce.controllers
 
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
-import com.api.ecommerce.dto.exceptions.StatusCode
-import com.api.ecommerce.dto.requests.RegisterRequest
-import com.api.ecommerce.dto.responses.DataResponse
-import com.api.ecommerce.dto.responses.RegisterResponse
-import com.api.ecommerce.dto.responses.UserResponse
-import com.api.ecommerce.repositories.UserRepository
+import com.api.ecommerce.dtos.exceptions.StatusCode
+import com.api.ecommerce.dtos.requests.RegisterRequest
+import com.api.ecommerce.dtos.responses.DataResponse
+import com.api.ecommerce.dtos.responses.RegisterResponse
+import com.api.ecommerce.dtos.responses.UserResponse
+import com.api.ecommerce.daos.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

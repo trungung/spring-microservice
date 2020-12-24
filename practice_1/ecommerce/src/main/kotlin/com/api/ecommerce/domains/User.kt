@@ -1,5 +1,9 @@
 package com.api.ecommerce.domains
 
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
+import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.Max
@@ -11,28 +15,28 @@ import javax.validation.constraints.NotBlank
 data class User(
 
     @NotBlank(message = "Name is mandatory")
-    @Column(name = "user_name")
+    @Column(name = "user_name", nullable = false, unique = true)
     var userName: String,
 
     @Email(message = "Email should be valid")
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
     var email: String,
 
     @Min(value = 9, message="Phone number must be equal or greater than 9")
     @Max(value = 12, message="Phone number must be equal or less than 12")
-    @Column(name = "phone")
+    @Column(name = "phone", nullable = false, unique = true)
     var phone: String,
 
-    @Column(name = "role")
-    var role: Int = 0,
+    @Column(name = "role", nullable = false)
+    var role: String = Role.CUSTOMER.value,
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val userId: Long = 0) {
+    val userId: Long = 0): UserDetails {
 
-    constructor() : this("", "", "", 0, 0)
+    constructor() : this("", "", "", "", 0)
 
-    constructor(userName: String, email: String, phone: String, role: Int) : this() {
+    constructor(userName: String, email: String, phone: String, role: String) : this() {
         this.userName = userName
         this.email = email
         this.phone = phone
@@ -43,15 +47,31 @@ data class User(
         return "User [id= + ${this.userId} + , name= + ${this.userName} + , email= + ${this.email} + , phone= + ${this.phone} + ]";
     }
 
-    fun setAdminRole() {
-        this.role = Role.ADMIN.value
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+        return Collections.singletonList(SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
     }
 
-    fun setBusinessRole() {
-        this.role = Role.BUSINESS.value
+    override fun getPassword(): String {
+        return password
     }
 
-    fun setCustomerRole() {
-        this.role = Role.CUSTOMER.value
+    override fun getUsername(): String {
+        return userName
+    }
+
+    override fun isAccountNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isAccountNonLocked(): Boolean {
+        return true
+    }
+
+    override fun isCredentialsNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isEnabled(): Boolean {
+        return true
     }
 }

@@ -1,7 +1,7 @@
 package com.api.ecommerce.controllers
 
-import com.api.ecommerce.dto.exceptions.StatusCode
-import com.api.ecommerce.dto.requests.RegisterRequest
+import com.api.ecommerce.dtos.exceptions.StatusCode
+import com.api.ecommerce.dtos.requests.RegisterRequest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest

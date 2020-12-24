@@ -2,8 +2,8 @@ package com.api.ecommerce.controllers
 
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
-import com.api.ecommerce.dto.requests.UserRequest
-import com.api.ecommerce.repositories.UserRepository
+import com.api.ecommerce.dtos.requests.UserRequest
+import com.api.ecommerce.daos.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity

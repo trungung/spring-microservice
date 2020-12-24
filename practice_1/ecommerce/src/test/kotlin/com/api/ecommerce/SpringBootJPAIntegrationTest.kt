@@ -4,7 +4,8 @@ import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 import com.api.ecommerce.domains.User
-import com.api.ecommerce.repositories.UserRepository
+import com.api.ecommerce.daos.UserRepository
+import com.api.ecommerce.domains.Role
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
@@ -25,7 +26,7 @@ class SpringBootJPAIntegrationTest {
         user.userName = "userName"
         user.email = "email"
         user.phone = "123456789"
-        user.setAdminRole()
+        user.role = Role.ADMIN.value
 
         val userEntity: User = userRepository.save(user)
         val foundEntity: User = userRepository.findById(userEntity.userId).get()
