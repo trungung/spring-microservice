@@ -14,7 +14,7 @@ data class Category(
     var description: String = "",
 
     // Here mappedBy indicates that the owner is in the other side
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = [CascadeType.ALL])
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = [CascadeType.ALL], orphanRemoval = true)
     var products: Set<Product> = setOf(),
 
     @Id

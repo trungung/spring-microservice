@@ -12,7 +12,7 @@ data class Product(
     @Column(nullable = false)
     var price: Double = 0.0,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     @JoinColumn(name = "category_id")
     var category: Category = Category(),
 

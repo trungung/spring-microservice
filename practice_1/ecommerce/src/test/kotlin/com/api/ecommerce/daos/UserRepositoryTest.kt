@@ -25,7 +25,7 @@ class UserRepositoryTest {
     @Test
     fun whenCreateNewUser() {
         // given
-        val user = User("userName", "email", "123456789", Role.ADMIN.value)
+        val user = User("userName", "email@gmail.com", "123456789", Role.ADMIN.value)
         userRepository.save(user)
 
         // when
@@ -37,7 +37,7 @@ class UserRepositoryTest {
     @Test
     fun whenFindById_thenReturnUser() {
         // given
-        val user = User("userName", "email", "123456789", Role.ADMIN.value)
+        val user = User("userName", "email@gmail.com", "123456789", Role.ADMIN.value)
         entityManager.persist<Any>(user)
         entityManager.flush()
 
@@ -52,7 +52,7 @@ class UserRepositoryTest {
     @Test
     fun whenFindByEmail_thenReturnUser() {
         // given
-        val user = User("userName", "email", "123456789", Role.ADMIN.value)
+        val user = User("userName", "email@gmail.com", "123456789", Role.ADMIN.value)
         userRepository.save(user)
 
         // when
@@ -66,7 +66,7 @@ class UserRepositoryTest {
     @Test
     fun whenFindByEmail_notExist_thenReturnEmpty() {
         // given
-        val user = User("userName", "email", "123456789", Role.ADMIN.value)
+        val user = User("userName", "email@gmail.com", "123456789", Role.ADMIN.value)
 
         // when
         val found = userRepository.findByEmail(user.email)
