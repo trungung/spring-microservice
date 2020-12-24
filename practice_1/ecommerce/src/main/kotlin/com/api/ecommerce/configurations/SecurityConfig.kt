@@ -78,8 +78,12 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .antMatchers("/h2", "/h2/**", "/error").permitAll()
             .antMatchers(*PERMITTED.toTypedArray()).permitAll()
             .anyRequest().authenticated()
-            .and()
+
+        // Custom JWT based security filter
+        http
             .addFilterBefore(JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
+        // disable page caching
+        http.headers().cacheControl();
     }
 
     @Autowired
