@@ -1,5 +1,6 @@
 package com.api.ecommerce.controllers
 
+import com.api.ecommerce.apis.AuthenticationApi
 import com.api.ecommerce.daos.UserRepository
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
@@ -14,23 +15,20 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
-@RestController
-@RequestMapping("/")
+/**
+ * The Spring RestController to manage for Authentication
+ */
 class AuthenticationController(
     @Autowired val userRepository: UserRepository,
     @Autowired val securityService: SecurityService
-    ) {
+    ): AuthenticationApi {
 
     private val logger: Logger = LoggerFactory.getLogger(AuthenticationController::class.java)
 
-    @PostMapping("register")
-    fun customerRegister(@RequestBody request: RegisterRequest): ResponseEntity<Any> {
+    override fun customerRegister(@RequestBody request: RegisterRequest): ResponseEntity<Any> {
 
         // Validate request body
         val valid = request.validate()
@@ -57,8 +55,7 @@ class AuthenticationController(
         return ResponseEntity.created(URI("/users/${user.userId}")).body(response)
     }
 
-    @PostMapping("admin/login")
-    fun customerLogin(@RequestBody request: RegisterRequest): ResponseEntity<Any> {
+    override fun customerLogin(@RequestBody request: RegisterRequest): ResponseEntity<Any> {
         // Validate request body
         val valid = request.validate()
         if (valid != StatusCode.OK) {
@@ -72,8 +69,7 @@ class AuthenticationController(
         return ResponseEntity.ok(response)
     }
 
-    @PostMapping("login")
-    fun login(@RequestBody credential: AuthenticationRequest): ResponseEntity<Any> {
+    override fun login(@RequestBody credential: AuthenticationRequest): ResponseEntity<Any> {
         // Validate request body
         val valid = credential.validate()
         if (valid != StatusCode.OK) {

@@ -5,7 +5,6 @@ import com.api.ecommerce.daos.CategoryRepository
 import com.api.ecommerce.domains.Product
 import com.api.ecommerce.dtos.requests.ProductRequest
 import com.api.ecommerce.services.ProductService
-import com.api.ecommerce.services.SecurityService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

@@ -18,12 +18,16 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import org.springframework.security.core.userdetails.UserDetailsService
 
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig: WebSecurityConfigurerAdapter() {
+
+    @Autowired
+    lateinit var userDetailsService: UserDetailsService
 
     private val PERMITTED = listOf(
         // -- swagger ui
@@ -127,6 +131,11 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun authenticationManagerBean(): AuthenticationManager {
         return super.authenticationManagerBean()
+    }
+
+    @Bean
+    override fun userDetailsService(): UserDetailsService {
+        return userDetailsService
     }
     
     // Define error messages

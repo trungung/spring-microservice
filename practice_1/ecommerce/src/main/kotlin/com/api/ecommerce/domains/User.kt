@@ -21,7 +21,14 @@ data class User(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val userId: Long = 0): UserDetails {
+    val userId: Long = 0,
+
+    @Column(nullable = false, unique = true)
+    var userName: String = "",
+
+    @Column(nullable = false)
+    var pass: String = ""
+    ): UserDetails {
 
     constructor() : this("", "", "", 0)
 
@@ -40,19 +47,19 @@ data class User(
     }
 
     fun setUsername(name: String) {
-        this.username = name
+        this.userName = name
     }
 
     fun setPassword(password: String) {
-        this.password = password
+        this.pass = password
     }
 
     override fun getUsername(): String {
-        return this.username
+        return this.userName
     }
 
     override fun getPassword(): String {
-        return this.password
+        return this.pass
     }
 
     override fun isAccountNonExpired(): Boolean {
