@@ -11,10 +11,16 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.security.crypto.password.PasswordEncoder
+
+import org.springframework.beans.factory.annotation.Autowired
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
 class AuthenticationControllerTest: BaseControllerTest() {
+
+    @Autowired
+    lateinit var encoder: PasswordEncoder
 
     @Test
     fun customerRegister_success() {
@@ -48,13 +54,14 @@ class AuthenticationControllerTest: BaseControllerTest() {
     @Test
     fun customerLogin_success() {
         // given
+        val pass = "password"
         val user = User("email@gmail.com", "123456789", Role.ADMIN.value)
         user.username = "userName"
-        user.password = "password"
+        user.password = encoder.encode(pass)
 
         userRepository.save(user)
 
-        val request = AuthenticationRequest(user.username, user.password)
+        val request = AuthenticationRequest(user.username, pass)
         performPostRequest("/login", request)
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(request.userName))

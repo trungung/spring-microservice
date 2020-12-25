@@ -18,6 +18,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
+import org.springframework.security.crypto.password.PasswordEncoder
+
+
+
 
 /**
  * The Spring RestController to manage for Authentication
@@ -25,7 +29,8 @@ import java.net.URI
 @RestController
 class AuthenticationController(
     @Autowired val userRepository: UserRepository,
-    @Autowired val securityService: SecurityService
+    @Autowired val securityService: SecurityService,
+    @Autowired var encoder: PasswordEncoder
     ): AuthenticationApi {
 
     private val logger: Logger = LoggerFactory.getLogger(AuthenticationController::class.java)
@@ -49,7 +54,7 @@ class AuthenticationController(
         // Create admin user and save to db
         val user = User(request.email, request.phone, Role.CUSTOMER.value)
         user.username = request.userName
-        user.password = request.password
+        user.password = encoder.encode(request.password)
         userRepository.save(user)
 
         // Create Response data

@@ -29,7 +29,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig: WebSecurityConfigurerAdapter() {
 
-
     @Autowired
     lateinit var authenticationFilter: JWTAuthenticationFilter
 
@@ -105,15 +104,14 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .logout().permitAll()
             .and()
 
-        // Set unauthorized requests exception handler
-        http.exceptionHandling()
-            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
-                response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    ex.message
-                )
-            }
-            .and()
+//        // Set unauthorized requests exception handler
+//        http.exceptionHandling()
+//            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
+//                response.sendError(
+//                    HttpServletResponse.SC_UNAUTHORIZED,
+//                    ex.message
+//                )
+//            }
 
         // Custom JWT based security filter
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
