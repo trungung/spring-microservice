@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
 /**
  * The Spring RestController to manage {@link Category}
  */
+@RestController
 class CategoryController(@Autowired val categoryRepository: CategoryRepository): CategoryApi {
 
     override fun getAllCategories(): List<Category> {
@@ -31,8 +33,16 @@ class CategoryController(@Autowired val categoryRepository: CategoryRepository):
         return ResponseEntity.created(URI("/categories/${category.id}")).body(category)
     }
 
-    override fun updateCategory(@RequestBody request: CategoryRequest): ResponseEntity<Category> {
-        val category = Category(request.name, request.description)
+    override fun updateCategory(@PathVariable("id") categoryId : Long, @RequestBody request: CategoryRequest): ResponseEntity<Category> {
+        val found = categoryRepository.findById(categoryId)
+        if (!found.isPresent) {
+            return ResponseEntity.notFound().build()
+        }
+
+        val category = found.get()
+        category.name = request.name
+        category.description = request.description
+
         categoryRepository.save(category)
         return ResponseEntity.accepted().body(category)
     }

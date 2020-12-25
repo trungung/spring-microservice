@@ -16,11 +16,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
 /**
  * The Spring RestController to manage for Authentication
  */
+@RestController
 class AuthenticationController(
     @Autowired val userRepository: UserRepository,
     @Autowired val securityService: SecurityService
@@ -65,7 +67,7 @@ class AuthenticationController(
 
        val token = securityService.authenticate(request.userName, request.password)
         // Create Response data
-        val response = AuthenticationResponse(request.userName, request.email, token)
+        val response = AuthenticationResponse(request.userName, token)
         return ResponseEntity.ok(response)
     }
 
@@ -83,6 +85,6 @@ class AuthenticationController(
         // Authenticating...
         val token = securityService.authenticate(username, password)
         logger.debug("User '{}' authenticated successfully -> Token: '{}'", username, token)
-        return ResponseEntity.ok(AuthenticationResponse(username, credential.email, token))
+        return ResponseEntity.ok(AuthenticationResponse(username, token))
     }
 }

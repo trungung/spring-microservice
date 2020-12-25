@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
-@RestController
 @RequestMapping("/categories")
 interface CategoryApi {
 
@@ -23,8 +22,8 @@ interface CategoryApi {
     fun createCategory(@RequestBody request: CategoryRequest): ResponseEntity<Category>
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("")
-    fun updateCategory(@RequestBody request: CategoryRequest): ResponseEntity<Category>
+    @PutMapping("/{id}")
+    fun updateCategory(@PathVariable("id") categoryId : Long, @RequestBody request: CategoryRequest): ResponseEntity<Category>
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")

@@ -5,18 +5,27 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.SignatureAlgorithm
 import java.util.*
+import io.jsonwebtoken.security.Keys
+
+import javax.crypto.SecretKey
+
+
+
 
 class JwtUtils {
     companion object {
-        private val TOKEN_SECRET_KEY = "ECommerceAppSecretKey"
-        private val TOKEN_PREFIX = "Bearer"
-        private val TOKEN_EXPIRATION: Long = 3600000 // 1 hour
+        val TOKEN_SECRET_KEY = "ECommerceAppSecretKey"
+        val TOKEN_EXPIRATION: Long = 3600000 // 1 hour
         val TOKEN_CLAIM_USERNAME = "username"
         val TOKEN_CLAIM_ROLES = "roles"
+        val TOKEN_PREFIX = "Bearer"
+        // creates a spec-compliant secure-random key:
+        val key = Keys.secretKeyFor(SignatureAlgorithm.HS256) //or HS384 or HS512
 
         fun generateToken(userId: Long, username: String, userRole: String): String {
             val now = Date()
-            val exp = Date(now.getTime() + TOKEN_EXPIRATION)
+            val exp = Date(now.time + TOKEN_EXPIRATION)
+
             val jwtToken = Jwts.builder()
                 .setSubject(userId.toString())
                 .claim(TOKEN_CLAIM_USERNAME, username)
@@ -24,14 +33,15 @@ class JwtUtils {
                 .setIssuedAt(now)
                 .setNotBefore(now)
                 .setExpiration(exp)
-                .signWith(SignatureAlgorithm.HS256, TOKEN_SECRET_KEY)
+                .signWith(key)
                 .compact()
             return "$TOKEN_PREFIX $jwtToken"
         }
 
         fun parseToken(token: String): Claims {
-            return Jwts.parser()
-                .setSigningKey(TOKEN_SECRET_KEY)
+            return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                 .body
         }

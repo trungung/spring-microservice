@@ -4,7 +4,6 @@ import com.api.ecommerce.dtos.exceptions.StatusCode
 
 class AuthenticationRequest(
     val userName: String,
-    val email: String,
     val password: String
 ) {
     fun validate(): StatusCode {

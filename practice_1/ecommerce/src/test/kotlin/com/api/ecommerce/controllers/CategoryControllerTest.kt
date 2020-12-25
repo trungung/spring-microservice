@@ -59,7 +59,7 @@ class CategoryControllerTest: BaseControllerTest() {
         categoryRepository.save(category)
         category.name = "C2"
         val request = CategoryRequest(category.name, category.description)
-        performPutRequest("/categories", request)
+        performPutRequest("/categories/${category.id}", request)
             .andExpect(MockMvcResultMatchers.status().isAccepted)
             .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name))
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))

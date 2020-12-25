@@ -16,13 +16,13 @@ class EcommerceApplication {
 
 	@PostConstruct
 	private fun initDb() {
-		val user = User()
-		user.username = "ADMIN"
-		user.password = "ADMIN"
-		user.email = "admin@admin.com"
-		user.phone = "123456789"
-		user.role = Role.ADMIN.value
-		userRepository.save(user)
+//		val user = User()
+//		user.username = "ADMIN"
+//		user.password = "ADMIN"
+//		user.email = "admin@admin.com"
+//		user.phone = "123456789"
+//		user.role = Role.ADMIN.value
+//		userRepository.save(user)
 	}
 }
 

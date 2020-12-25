@@ -54,7 +54,7 @@ class AuthenticationControllerTest: BaseControllerTest() {
 
         userRepository.save(user)
 
-        val request = AuthenticationRequest(user.username, user.email, user.password)
+        val request = AuthenticationRequest(user.username, user.password)
         performPostRequest("/login", request)
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(request.userName))

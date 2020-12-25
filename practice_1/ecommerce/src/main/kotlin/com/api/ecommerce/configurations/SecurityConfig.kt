@@ -19,12 +19,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
+
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig: WebSecurityConfigurerAdapter() {
+
+
+    @Autowired
+    lateinit var authenticationFilter: JWTAuthenticationFilter
 
     @Autowired
     lateinit var userDetailsService: UserDetailsService
@@ -42,18 +50,20 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
         "/api-docs/**",
         "/health",
         "/info",
-        "/users",
         "/users/*",
-        "/categories/*",
-        "/products/*",
-        "/customers/*"
+        "/users"
     )
 
     @Throws(Exception::class)
     override fun configure(security: AuthenticationManagerBuilder) {
         security
-            .userDetailsService(userDetailsService())
+            .userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder())
+    }
+
+    @Throws(Exception::class)
+    override fun configure(web: WebSecurity) {
+        web.ignoring().antMatchers(*PERMITTED.toTypedArray())
     }
 
     @Throws(Exception::class)
@@ -87,6 +97,7 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
+            .antMatchers(HttpMethod.POST, "/admin/login").permitAll()
             .antMatchers(HttpMethod.POST, "/register").permitAll()
             .antMatchers("/h2", "/h2/**", "/error").permitAll()
             .antMatchers(*PERMITTED.toTypedArray()).permitAll()
@@ -95,10 +106,11 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .formLogin().loginPage("/login").permitAll()
             .and()
             .logout().permitAll()
+            .and()
 
         // Set unauthorized requests exception handler
         http.exceptionHandling()
-            .authenticationEntryPoint { request: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
+            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
                 response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED,
                     ex.message
@@ -107,8 +119,7 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .and()
 
         // Custom JWT based security filter
-        http
-            .addFilterBefore(JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         // disable page caching
         http.headers().cacheControl()
     }
@@ -137,7 +148,22 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
     override fun userDetailsService(): UserDetailsService {
         return userDetailsService
     }
-    
+
+    @Bean
+    fun authenticationFilter(): JWTAuthenticationFilter {
+        return JWTAuthenticationFilter()
+    }
+
+    // Note: if we want to manage more roles, probably we need to create a UserRole entity class
+    // and keep this logic isolated somewhere
+    @Bean
+    fun roleHierarchy(): RoleHierarchy {
+        val roleHierarchy = RoleHierarchyImpl()
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER")
+        return roleHierarchy
+    }
+
+
     // Define error messages
     companion object {
         const val NO_AUTH = "noauth"

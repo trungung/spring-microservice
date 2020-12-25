@@ -34,7 +34,6 @@ class SpringFoxConfig {
     fun securityContext(): SecurityContext {
         return SecurityContext.builder()
             .securityReferences(defaultAuth())
-            .forPaths(PathSelectors.any())
             .build()
     }
 

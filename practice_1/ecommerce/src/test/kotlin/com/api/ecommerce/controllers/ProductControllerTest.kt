@@ -34,7 +34,7 @@ class ProductControllerTest: BaseControllerTest() {
 
     private val product = Product("P1", "p", 1, 1000.0)
 
-    fun setupCategory() {
+    private fun setupCategory() {
         categoryRepository.saveAll(categories)
     }
 
@@ -108,7 +108,6 @@ class ProductControllerTest: BaseControllerTest() {
         val request = ProductRequest("abc", "abc", 10, 1000.0, categories[0].id)
         performPostRequest("/products", request)
             .andExpect(MockMvcResultMatchers.status().is4xxClientError)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name))
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andReturn()
     }
