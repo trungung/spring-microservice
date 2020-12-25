@@ -27,7 +27,10 @@ class UserController(@Autowired val userRepository: UserRepository) {
     @PostMapping("/admin")
     fun createAdmin(@RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
-        val user = User(request.userName, request.email, request.phone, Role.ADMIN.value)
+        val user = User(request.email, request.phone, Role.ADMIN.value)
+        user.username = request.userName
+        user.password = request.password
+
         userRepository.save(user)
         return ResponseEntity.ok(user)
     }
@@ -35,7 +38,10 @@ class UserController(@Autowired val userRepository: UserRepository) {
     @PostMapping("/business")
     fun createBusiness(@RequestBody request: UserRequest): ResponseEntity<User>  {
         // Create admin user and save to db
-        val user = User(request.userName, request.email, request.phone, Role.BUSINESS.value)
+        val user = User(request.email, request.phone, Role.BUSINESS.value)
+        user.username = request.userName
+        user.password = request.password
+
         userRepository.save(user)
         return ResponseEntity.ok(user)
     }
@@ -43,14 +49,20 @@ class UserController(@Autowired val userRepository: UserRepository) {
     @PostMapping("/customer", MediaType.APPLICATION_JSON_VALUE)
     fun createCustomer(@RequestBody request: UserRequest): ResponseEntity<User> {
         // Create admin user and save to db
-        val user = User(request.userName, request.email, request.phone, Role.CUSTOMER.value)
+        val user = User(request.email, request.phone, Role.CUSTOMER.value)
+        user.username = request.userName
+        user.password = request.password
+
         userRepository.save(user)
         return ResponseEntity.ok(user)
     }
 
     @PutMapping("")
     fun updateUser(@RequestBody request: UserRequest): ResponseEntity<User> {
-        val user = User(request.userName, request.email, request.phone, Role.CUSTOMER.value)
+        val user = User(request.email, request.phone, Role.CUSTOMER.value)
+        user.username = request.userName
+        user.password = request.password
+
         userRepository.save(user)
         return ResponseEntity.accepted().body(user)
     }

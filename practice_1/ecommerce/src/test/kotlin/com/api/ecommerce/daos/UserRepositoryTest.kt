@@ -25,7 +25,10 @@ class UserRepositoryTest {
     @Test
     fun whenCreateNewUser() {
         // given
-        val user = User("userName", "email@gmail.com", "123456789", Role.ADMIN.value)
+        val user = User("email@gmail.com", "123456789", Role.ADMIN.value)
+        user.username = "userName"
+        user.password = "password"
+
         userRepository.save(user)
 
         // when
@@ -37,42 +40,46 @@ class UserRepositoryTest {
     @Test
     fun whenFindById_thenReturnUser() {
         // given
-        val user = User("userName", "email@gmail.com", "123456789", Role.ADMIN.value)
-        entityManager.persist<Any>(user)
-        entityManager.flush()
+        val user = User("email@gmail.com", "123456789", Role.ADMIN.value)
+        user.username = "userName"
+        user.password = "password"
+
+//        entityManager.persist<Any>(user)
+//        entityManager.flush()
+        userRepository.save(user)
 
         // when
         val found = userRepository.findById(user.userId)
 
         // then
         assertNotNull(found)
-        assertEquals(found.get().userName, user.userName)
+        assertEquals(found.get().username, user.username)
     }
 
     @Test
     fun whenFindByEmail_thenReturnUser() {
         // given
-        val user = User("userName", "email@gmail.com", "123456789", Role.ADMIN.value)
+        val user = User("email@gmail.com", "123456789", Role.ADMIN.value)
+        user.username = "userName"
+        user.password = "password"
+
         userRepository.save(user)
 
         // when
         val found = userRepository.findByEmail(user.email)
 
         // then
-        assertTrue(found.isPresent)
-        assertEquals(found.get().email, user.email)
+        assertNotNull(found)
+        assertEquals(found?.email, user.email)
     }
 
     @Test
     fun whenFindByEmail_notExist_thenReturnEmpty() {
-        // given
-        val user = User("userName", "email@gmail.com", "123456789", Role.ADMIN.value)
-
         // when
-        val found = userRepository.findByEmail(user.email)
+        val found = userRepository.findByEmail("email@gmail.com")
 
         // then
-        assertTrue(found.isPresent)
+        assertNull(found)
     }
 
 

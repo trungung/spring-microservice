@@ -23,6 +23,7 @@ class CategoryController(@Autowired val categoryRepository: CategoryRepository) 
         return ResponseEntity.ok(category)
     }
 
+
     @PostMapping("")
     fun createCategory(@RequestBody request: CategoryRequest): ResponseEntity<Category>  {
         // Create category and save to db

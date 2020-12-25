@@ -44,7 +44,8 @@ class SecurityServiceImpl: SecurityService, UserDetailsService {
     override fun authenticate(token: String) {
         val claims = JwtUtils.parseToken(token)
 
-        val user = User(claims[JwtUtils.TOKEN_CLAIM_USERNAME].toString(), "", "", claims[JwtUtils.TOKEN_CLAIM_ROLES].toString(), claims.subject.toLong())
+        val user = User("","", claims[JwtUtils.TOKEN_CLAIM_ROLES].toString(), claims.subject.toLong())
+        user.username = claims[JwtUtils.TOKEN_CLAIM_USERNAME].toString()
         // Setting up Authentication...
         SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(user, null, user.authorities)
     }

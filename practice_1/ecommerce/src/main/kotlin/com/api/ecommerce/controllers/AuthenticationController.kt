@@ -41,13 +41,15 @@ class AuthenticationController(
 
         // Check email is exist
         val findUser = userRepository.findByEmail(request.email)
-        if (!findUser.isPresent) {
+        if (findUser != null) {
             val errorResponse = DataResponse<Any>(StatusCode.EmailExist.code)
             return ResponseEntity.badRequest().body(errorResponse)
         }
 
         // Create admin user and save to db
-        val user = User(request.userName, request.email, request.phone, Role.CUSTOMER.value)
+        val user = User(request.email, request.phone, Role.CUSTOMER.value)
+        user.username = request.userName
+        user.password = request.password
         userRepository.save(user)
 
         // Create Response data

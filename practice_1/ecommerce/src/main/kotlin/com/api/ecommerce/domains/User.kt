@@ -5,17 +5,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.*
 import javax.persistence.*
-import javax.validation.constraints.Email
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotBlank
 
 @Entity
 @Table(name="\"tb_user\"")
 data class User(
-
-    @Column(nullable = false)
-    var userName: String,
 
     @Column(nullable = false, unique = true)
     var email: String,
@@ -30,29 +23,36 @@ data class User(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val userId: Long = 0): UserDetails {
 
-    constructor() : this("", "", "", "", 0)
+    constructor() : this("", "", "", 0)
 
-    constructor(userName: String, email: String, phone: String, role: String) : this() {
-        this.userName = userName
+    constructor(email: String, phone: String, role: String) : this() {
         this.email = email
         this.phone = phone
         this.role = role
     }
 
     override fun toString(): String {
-        return "User [id= + ${this.userId} + , name= + ${this.userName} + , email= + ${this.email} + , phone= + ${this.phone} + ]";
+        return "User [id= + ${this.userId} + , email= + ${this.email} + , phone= + ${this.phone} + ]"
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return Collections.singletonList(SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
     }
 
-    override fun getPassword(): String {
-        return password
+    fun setUsername(name: String) {
+        this.username = name
+    }
+
+    fun setPassword(password: String) {
+        this.password = password
     }
 
     override fun getUsername(): String {
-        return userName
+        return this.username
+    }
+
+    override fun getPassword(): String {
+        return this.password
     }
 
     override fun isAccountNonExpired(): Boolean {

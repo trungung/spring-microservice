@@ -23,7 +23,7 @@ class SpringBootJPAIntegrationTest {
     @Test
     fun givenUserEntityRepository_whenSaveAndRetreiveEntity_thenOK() {
         val user = User()
-        user.userName = "userName"
+        user.username = "userName"
         user.email = "email"
         user.phone = "123456789"
         user.role = Role.ADMIN.value

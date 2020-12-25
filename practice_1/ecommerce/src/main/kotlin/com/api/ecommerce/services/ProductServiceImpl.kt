@@ -34,9 +34,10 @@ class ProductServiceImpl: ProductService {
         TODO("Not yet implemented")
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     @Transactional
     override fun getProductById(id: Long): Optional<Product> {
+
+
         return productRepository.findById(id)
     }
 

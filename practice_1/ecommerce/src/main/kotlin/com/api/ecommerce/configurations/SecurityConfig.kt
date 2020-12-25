@@ -12,9 +12,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 
 @Configuration
@@ -23,8 +26,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig: WebSecurityConfigurerAdapter() {
 
     private val PERMITTED = listOf(
-        "/configuration/**",
+        // -- swagger ui
+        "/v2/api-docs",
+        "/swagger-resources",
         "/swagger-resources/**",
+        "/configuration/**",
+        "/configuration/security",
+        "/swagger-ui.html",
         "/swagger-ui/**",
         "/webjars/**",
         "/api-docs/**",
@@ -75,15 +83,30 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
+            .antMatchers(HttpMethod.POST, "/register").permitAll()
             .antMatchers("/h2", "/h2/**", "/error").permitAll()
             .antMatchers(*PERMITTED.toTypedArray()).permitAll()
             .anyRequest().authenticated()
+            .and()
+            .formLogin().loginPage("/login").permitAll()
+            .and()
+            .logout().permitAll()
+
+        // Set unauthorized requests exception handler
+        http.exceptionHandling()
+            .authenticationEntryPoint { request: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
+                response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    ex.message
+                )
+            }
+            .and()
 
         // Custom JWT based security filter
         http
             .addFilterBefore(JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
         // disable page caching
-        http.headers().cacheControl();
+        http.headers().cacheControl()
     }
 
     @Autowired
