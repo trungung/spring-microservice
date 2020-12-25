@@ -27,6 +27,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	testImplementation("org.springframework.security:spring-security-test")
 	implementation("com.okta.spring:okta-spring-boot-starter:1.2.1")
 
 	// Spring boot validation
@@ -62,8 +64,8 @@ dependencies {
 	testImplementation("com.h2database:h2:1.3.148")
 
 	// https://mvnrepository.com/artifact/org.hibernate/hibernate-jpamodelgen
-	implementation("org.hibernate:hibernate-jpamodelgen:5.4.26.Final")
-	annotationProcessor("org.hibernate:hibernate-jpamodelgen")
+//	implementation("org.hibernate:hibernate-jpamodelgen")
+//	annotationProcessor("org.hibernate:hibernate-jpamodelgen")
 }
 
 tasks.withType<KotlinCompile> {

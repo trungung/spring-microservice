@@ -8,6 +8,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
@@ -21,6 +22,7 @@ class CategoryControllerTest: BaseControllerTest() {
     private val category = Category("C", "c")
 
     @Test
+    @WithMockUser(username="admin",roles=["ADMIN"])
     fun createCategory_success() {
         val request = CategoryRequest("abc", "abc")
         performPostRequest("/categories", request)
@@ -31,7 +33,9 @@ class CategoryControllerTest: BaseControllerTest() {
     }
 
     @Test
+    @WithMockUser(username="user",roles=["USER"])
     fun getAllCategories() {
+        categoryRepository.save(category)
         performGetRequest("/categories")
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -39,6 +43,7 @@ class CategoryControllerTest: BaseControllerTest() {
     }
 
     @Test
+    @WithMockUser(username="user",roles=["USER"])
     fun getCategoryById() {
         categoryRepository.save(category)
         performGetRequest("/categories/${category.id}")
@@ -49,11 +54,12 @@ class CategoryControllerTest: BaseControllerTest() {
     }
 
     @Test
+    @WithMockUser(username="admin",roles=["ADMIN"])
     fun updateCategory_success() {
         categoryRepository.save(category)
         category.name = "C2"
         val request = CategoryRequest(category.name, category.description)
-        performPutRequest("/categories", request)
+        performPutRequest("/categories/${category.id}", request)
             .andExpect(MockMvcResultMatchers.status().isAccepted)
             .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name))
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -61,6 +67,7 @@ class CategoryControllerTest: BaseControllerTest() {
     }
 
     @Test
+    @WithMockUser(username="admin",roles=["ADMIN"])
     fun deleteCategory_success() {
         categoryRepository.save(category)
         performDelete("/categories/${category.id}")

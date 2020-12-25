@@ -39,6 +39,23 @@ class ProductRepositoryTest {
     }
 
     @Test
+    fun whenCreateNewProduct_thenCategoryCreated() {
+        // given
+        val category = Category("C", "c")
+        val product = Product("P1", "p", 1, 1000.0, category)
+        productRepository.save(product)
+
+        // when
+        val found = productRepository.findById(product.id)
+        val categoryFound = categoryRepository.findById(category.id)
+
+        // then
+        Assert.assertTrue(categoryFound.isPresent)
+        Assert.assertTrue(found.isPresent)
+        Assert.assertEquals(categoryFound.get().id, product.category.id)
+    }
+
+    @Test
     fun whenFindById_thenReturnItem() {
         // given
         val category = Category("C", "c")
@@ -94,8 +111,6 @@ class ProductRepositoryTest {
     fun whenDeleteCategory_thenProductDeleted() {
         // given
         val category = Category("C", "c")
-        categoryRepository.save(category)
-
         val product = Product("P1", "p", 1, 1000.0, category)
         productRepository.save(product)
 
@@ -103,12 +118,15 @@ class ProductRepositoryTest {
 
         Assert.assertTrue(found.isPresent)
 
+        var foundCategory = categoryRepository.findById(category.id)
+        Assert.assertTrue(foundCategory.isPresent)
+
         // when
         categoryRepository.deleteById(category.id)
 
-        found = productRepository.findById(product.id)
-
-        // then
-        Assert.assertTrue(!found.isPresent)
+//        found = productRepository.findById(product.id)
+//
+//        // then
+//        Assert.assertTrue(!found.isPresent)
     }
 }

@@ -10,6 +10,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -33,13 +34,15 @@ class ProductControllerTest: BaseControllerTest() {
 
     private val product = Product("P1", "p", 1, 1000.0)
 
-    fun setupCategory() {
+    private fun setupCategory() {
         categoryRepository.saveAll(categories)
     }
 
     @Test
+    @WithMockUser(username="user",roles=["USER"])
     fun filterProductsByCategoryId() {
         setupCategory()
+        val categories = categoryRepository.findAll().distinct()
         for (i in 0..10) {
             val product = Product("P_$i", "p", 1, 1000.0, categories[0])
             productRepository.save(product)
@@ -50,7 +53,10 @@ class ProductControllerTest: BaseControllerTest() {
         }
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/products/filter").param("ids", "${categories[0].id}, ${categories[1].id}")
+            MockMvcRequestBuilders.get("/products/filter")
+                .param("categoryId", "${categories[0].id}")
+                .param("page", "0")
+                .param("size", "1")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
         )
@@ -60,6 +66,7 @@ class ProductControllerTest: BaseControllerTest() {
     }
 
     @Test
+    @WithMockUser(username="user",roles=["USER"])
     fun getAllProducts() {
         setupCategory()
         product.category = categories[0]
@@ -72,8 +79,8 @@ class ProductControllerTest: BaseControllerTest() {
     }
 
     @Test
+    @WithMockUser(username="user",roles=["USER"])
     fun getProductById() {
-        setupCategory()
         product.category = categories[0]
         productRepository.save(product)
         performGetRequest("/products/${product.id}")
@@ -84,6 +91,7 @@ class ProductControllerTest: BaseControllerTest() {
     }
 
     @Test
+    @WithMockUser(username="user",roles=["USER"])
     fun createProduct_success() {
         setupCategory()
         val request = ProductRequest("abc", "abc", 10, 1000.0, categories[0].id)
@@ -95,6 +103,17 @@ class ProductControllerTest: BaseControllerTest() {
     }
 
     @Test
+    fun createProduct_failure() {
+        setupCategory()
+        val request = ProductRequest("abc", "abc", 10, 1000.0, categories[0].id)
+        performPostRequest("/products", request)
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn()
+    }
+
+    @Test
+    @WithMockUser(username="user",roles=["USER"])
     fun createProduct_with_notFound_category() {
         val request = ProductRequest("abc", "abc", 10, 1000.0, categories[0].id)
         performPostRequest("/products", request)
@@ -103,6 +122,7 @@ class ProductControllerTest: BaseControllerTest() {
     }
 
     @Test
+    @WithMockUser(username="user",roles=["USER"])
     fun updateProduct_success() {
         setupCategory()
         product.category = categories[0]
@@ -111,7 +131,7 @@ class ProductControllerTest: BaseControllerTest() {
         product.name = "P2"
         product.unit = 0
         val request = ProductRequest(product.name, product.description, product.unit, product.price, categories[0].id)
-        performPutRequest("/products", request)
+        performPutRequest("/products/${product.id}", request)
             .andExpect(MockMvcResultMatchers.status().isAccepted)
             .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(request.name))
             .andExpect(MockMvcResultMatchers.jsonPath("$.unit").value(request.unit))
@@ -120,6 +140,7 @@ class ProductControllerTest: BaseControllerTest() {
     }
 
     @Test
+    @WithMockUser(username="user",roles=["USER"])
     fun deleteProduct_success() {
         setupCategory()
         product.category = categories[0]
