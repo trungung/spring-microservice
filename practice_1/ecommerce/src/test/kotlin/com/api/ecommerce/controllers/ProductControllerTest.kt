@@ -41,7 +41,7 @@ class ProductControllerTest: BaseControllerTest() {
     @Test
     @WithMockUser(username="user",roles=["USER"])
     fun filterProductsByCategoryId() {
-        setupCategory()
+        //setupCategory()
         val categories = categoryRepository.findAll().distinct()
         for (i in 0..10) {
             val product = Product("P_$i", "p", 1, 1000.0, categories[0])
@@ -68,7 +68,7 @@ class ProductControllerTest: BaseControllerTest() {
     @Test
     @WithMockUser(username="user",roles=["USER"])
     fun getAllProducts() {
-        setupCategory()
+        //setupCategory()
         product.category = categories[0]
         productRepository.save(product)
 

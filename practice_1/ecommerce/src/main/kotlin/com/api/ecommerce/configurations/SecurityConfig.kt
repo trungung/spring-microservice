@@ -24,7 +24,6 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -51,7 +50,10 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
         "/health",
         "/info",
         "/users/*",
-        "/users"
+        "/users",
+        "/register",
+        "/login",
+        "/admin/login"
     )
 
     @Throws(Exception::class)
@@ -96,14 +98,9 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .antMatchers(HttpMethod.POST, "/login").permitAll()
-            .antMatchers(HttpMethod.POST, "/admin/login").permitAll()
-            .antMatchers(HttpMethod.POST, "/register").permitAll()
             .antMatchers("/h2", "/h2/**", "/error").permitAll()
             .antMatchers(*PERMITTED.toTypedArray()).permitAll()
             .anyRequest().authenticated()
-            .and()
-            .formLogin().loginPage("/login").permitAll()
             .and()
             .logout().permitAll()
             .and()
@@ -124,14 +121,14 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
         http.headers().cacheControl()
     }
 
-    @Autowired
-    @Throws(Exception::class)
-    fun configureGlobal(auth: AuthenticationManagerBuilder) {
-        auth.inMemoryAuthentication()
-            .withUser("user").password("user").roles("USER")
-            .and()
-            .withUser("admin").password("admin").roles("ADMIN")
-    }
+//    @Autowired
+//    @Throws(Exception::class)
+//    fun configureGlobal(auth: AuthenticationManagerBuilder) {
+//        auth.inMemoryAuthentication()
+//            .withUser("user").password("{noop}password").roles("USER")
+//            .and()
+//            .withUser("admin").password("{noop}password").roles("ADMIN")
+//    }
 
     @Bean
     fun passwordEncoder(): PasswordEncoder? {
