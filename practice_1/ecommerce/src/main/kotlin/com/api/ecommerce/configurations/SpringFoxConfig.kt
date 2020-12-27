@@ -22,7 +22,8 @@ class SpringFoxConfig {
     fun api(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
             .select()
-            .apis(RequestHandlerSelectors.any())
+//            .apis(RequestHandlerSelectors.any())
+            .apis(RequestHandlerSelectors.basePackage("com.api.ecommerce.controllers"))
             .paths(PathSelectors.any())
             .build()
             .pathMapping("/")
