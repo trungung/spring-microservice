@@ -68,10 +68,6 @@ class ProductControllerTest: BaseControllerTest() {
     @Test
     @WithMockUser(username="user",roles=["USER"])
     fun getAllProducts() {
-        //setupCategory()
-        product.category = categories[0]
-        productRepository.save(product)
-
         performGetRequest("/products")
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -81,6 +77,7 @@ class ProductControllerTest: BaseControllerTest() {
     @Test
     @WithMockUser(username="user",roles=["USER"])
     fun getProductById() {
+        productRepository.deleteAll()
         product.category = categories[0]
         productRepository.save(product)
         performGetRequest("/products/${product.id}")
@@ -140,7 +137,7 @@ class ProductControllerTest: BaseControllerTest() {
     }
 
     @Test
-    @WithMockUser(username="user",roles=["USER"])
+    @WithMockUser(username="user",roles=["ADMIN"])
     fun deleteProduct_success() {
         setupCategory()
         product.category = categories[0]

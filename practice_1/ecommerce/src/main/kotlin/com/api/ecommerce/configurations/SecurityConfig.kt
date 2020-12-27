@@ -22,6 +22,10 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import com.api.ecommerce.securities.AuthEntryPointJwt
+
+
+
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +34,9 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var userDetailsService: UserDetailsServiceImpl
+
+    @Autowired
+    lateinit var unauthorizedHandler: AuthEntryPointJwt
 
     private val PERMITTED = listOf(
         // -- swagger ui
@@ -100,14 +107,14 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .logout().permitAll()
             .and()
 
-        // Set unauthorized requests exception handler
-        http.exceptionHandling()
-            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
-                response.sendError(
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    ex.message
-                )
-            }
+//        // Set unauthorized requests exception handler
+//        http.exceptionHandling()
+//            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
+//                response.sendError(
+//                    HttpServletResponse.SC_UNAUTHORIZED,
+//                    ex.message
+//                )
+//            }
 
         // Custom JWT based security filter
         http.addFilterBefore(JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)

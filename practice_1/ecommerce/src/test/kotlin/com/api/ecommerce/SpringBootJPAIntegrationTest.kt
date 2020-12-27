@@ -22,6 +22,7 @@ class SpringBootJPAIntegrationTest {
 
     @Test
     fun givenUserEntityRepository_whenSaveAndRetreiveEntity_thenOK() {
+        userRepository.deleteAll()
         val user = User()
         user.username = "userName"
         user.email = "email@gmail.com"
