@@ -1,36 +1,66 @@
 package com.api.ecommerce.services
 
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import com.api.ecommerce.daos.UserRepository
+import com.api.ecommerce.domains.User
+import com.api.ecommerce.securities.JwtUtils
+import com.api.ecommerce.securities.JwtUtils.Companion.TOKEN_CLAIM_ROLES
+import com.api.ecommerce.securities.JwtUtils.Companion.TOKEN_CLAIM_USERNAME
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
-import java.util.*
-import javax.crypto.spec.SecretKeySpec
-import javax.xml.bind.DatatypeConverter
+import javax.transaction.Transactional
 
+
+/**
+ * Spring-oriented Implementation for {@link SecurityService}
+ * Also it implements {@link UserDetailsService} being required by the Spring Security framework.
+ */
 @Service
-class SecurityServiceImpl: SecurityService {
+class SecurityServiceImpl: SecurityService, UserDetailsService {
 
-    private val secretKey = "4C8kum4LxyKWYLM78sKdXrzbBjDCFyfX"
+    @Autowired
+    lateinit var userRepository: UserRepository
 
-    override fun createToken(subject: String, millis: Long): String {
-        if (millis <= 0) {
-            throw RuntimeException("Expiry time must be greater than Zero :[${millis}] ")
-        }
+    @Autowired
+    lateinit var authenticationManager: AuthenticationManager
 
-        val signatureAlgorithm = SignatureAlgorithm.HS256
-        val apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secretKey)
-        val signingKey = SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.jcaName)
-        val builder = Jwts.builder().setSubject(subject).signWith(signingKey, signatureAlgorithm)
-        val nowMillis = System.currentTimeMillis()
-        builder.setExpiration(Date(nowMillis + millis))
-        return builder.compact()
+    @Transactional
+    override fun authenticate(username: String, password: String): String {
+        val authentication: Authentication = authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(username, password)
+        )
+
+        SecurityContextHolder.getContext().authentication = authentication
+
+         val user: User = loadUserByUsername(username)
+        return JwtUtils.generateJwtToken(authentication)
     }
 
-    override fun getSubject(token: String): String {
-        val claims = Jwts.parserBuilder()
-            .setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
-            .build()
-            .parseClaimsJws(token).body
-        return claims.subject
+    @Transactional
+    override fun authenticate(token: String) {
+        val claims = JwtUtils.parseToken(token)
+
+        val user = User("","", claims[TOKEN_CLAIM_ROLES].toString(), claims.subject.toLong())
+        user.username = claims[TOKEN_CLAIM_USERNAME].toString()
+        // Setting up Authentication...
+        SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(user, null, user.authorities)
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Transactional
+    override fun getCurrentUser(): User {
+        return (SecurityContextHolder.getContext().authentication.principal as User)
+    }
+
+    @Transactional
+    override fun loadUserByUsername(username: String): User {
+        return userRepository.findByUserName(username)
+            .orElseThrow { UsernameNotFoundException("Invalid username or password.") }
     }
 }

@@ -52,6 +52,7 @@ Temporary Items
 bin/
 gen/
 out/
+example/
 
 # Gradle files
 .gradle/

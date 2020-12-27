@@ -1,59 +1,72 @@
 package com.api.ecommerce.controllers
 
+import com.api.ecommerce.apis.UserApi
+import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
-import com.api.ecommerce.services.UserService
+import com.api.ecommerce.dtos.requests.UserRequest
+import com.api.ecommerce.daos.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+/**
+ * The Spring RestController to manage User
+ *       JUST FOR TESTING AND DEBUG
+ */
 @RestController
-@RequestMapping("/user")
-class UserController {
+class UserController(@Autowired val userRepository: UserRepository): UserApi {
 
-    @Autowired
-    lateinit var userService: UserService
-
-    @ResponseBody
-    @GetMapping("")
-    fun getAllUsers(): List<User> {
-        return userService.getAllUsers()
+    override fun getAllUsers(): List<User> {
+        return userRepository.findAll().distinct()
     }
 
-    @ResponseBody
-    @GetMapping("/{id}")
-    fun getUser(@PathVariable("id") userId : Int): User {
-        return userService.getUser(userId)
+    override fun getUser(@PathVariable("id") userId : Long): ResponseEntity<User> {
+        val user = userRepository.findById(userId).get()
+        return ResponseEntity.ok(user)
     }
 
-    @ResponseBody
-    @PostMapping("")
-    fun createUser(
-        @RequestParam("user_id") userId: Int,
-        @RequestParam("user_name") userName: String
-    ): Map<String, Any> {
-        userService.createUser(userId, userName)
-        val map = LinkedHashMap<String, Any>()
-        map["result"] = "Added"
-        return map
+    override fun createAdmin(@RequestBody request: UserRequest): ResponseEntity<User>  {
+        // Create admin user and save to db
+        val user = User(request.email, request.phone, Role.ADMIN.value)
+        user.username = request.userName
+        user.password = request.password
+
+        userRepository.save(user)
+        return ResponseEntity.ok(user)
     }
 
-    @ResponseBody
-    @PutMapping("")
-    fun updateUser(
-        @RequestParam("user_id") userId: Int,
-        @RequestParam("user_name") userName: String
-    ): Map<String, Any> {
-        userService.updateUser(userId, userName)
-        val map = LinkedHashMap<String, Any>()
-        map["result"] = "Updated"
-        return map
+    override fun createBusiness(@RequestBody request: UserRequest): ResponseEntity<User>  {
+        // Create admin user and save to db
+        val user = User(request.email, request.phone, Role.BUSINESS.value)
+        user.username = request.userName
+        user.password = request.password
+
+        userRepository.save(user)
+        return ResponseEntity.ok(user)
     }
 
-    @ResponseBody
-    @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable("id") userId: Int): Map<String, Any> {
-        userService.deleteUser(userId)
-        val map = LinkedHashMap<String, Any>()
-        map["result"] = "Deleted"
-        return map
+    override fun createCustomer(@RequestBody request: UserRequest): ResponseEntity<User> {
+        // Create admin user and save to db
+        val user = User(request.email, request.phone, Role.CUSTOMER.value)
+        user.username = request.userName
+        user.password = request.password
+
+        userRepository.save(user)
+        return ResponseEntity.ok(user)
+    }
+
+    override fun updateUser(@RequestBody request: UserRequest): ResponseEntity<User> {
+        val user = User(request.email, request.phone, Role.CUSTOMER.value)
+        user.username = request.userName
+        user.password = request.password
+
+        userRepository.save(user)
+        return ResponseEntity.accepted().body(user)
+    }
+
+    override fun deleteUser(@PathVariable("id") userId: Long): ResponseEntity<Any> {
+        userRepository.deleteById(userId)
+        return ResponseEntity.noContent().build()
     }
 }
