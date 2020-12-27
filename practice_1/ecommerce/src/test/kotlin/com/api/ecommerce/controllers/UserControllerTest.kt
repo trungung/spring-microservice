@@ -25,10 +25,10 @@ class UserControllerTest: BaseControllerTest() {
 
     @Test
     fun getUserById() {
+        userRepository.deleteAll()
         val user = User("email@gmail.com", "123456789", Role.CUSTOMER.value)
         user.username = "userName"
         user.password = "password"
-
         userRepository.save(user)
         performGetRequest("/users/${user.userId}")
             .andExpect(status().isOk)
@@ -43,7 +43,6 @@ class UserControllerTest: BaseControllerTest() {
         user.password = "password"
 
         val request = UserRequest(user.username, user.password, user.email, user.phone)
-        userRepository.save(user)
         performPostRequest("/users/admin", request)
             .andExpect(status().isOk)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
