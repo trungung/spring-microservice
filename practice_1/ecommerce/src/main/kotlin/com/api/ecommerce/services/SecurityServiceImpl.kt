@@ -3,6 +3,8 @@ package com.api.ecommerce.services
 import com.api.ecommerce.daos.UserRepository
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.securities.JwtUtils
+import com.api.ecommerce.securities.JwtUtils.Companion.TOKEN_CLAIM_ROLES
+import com.api.ecommerce.securities.JwtUtils.Companion.TOKEN_CLAIM_USERNAME
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.AuthenticationManager
@@ -36,7 +38,7 @@ class SecurityServiceImpl: SecurityService, UserDetailsService {
 
         SecurityContextHolder.getContext().authentication = authentication
 
-        val user: User = loadUserByUsername(username)
+         val user: User = loadUserByUsername(username)
         return JwtUtils.generateJwtToken(authentication)
     }
 
@@ -44,8 +46,8 @@ class SecurityServiceImpl: SecurityService, UserDetailsService {
     override fun authenticate(token: String) {
         val claims = JwtUtils.parseToken(token)
 
-        val user = User("","", claims[JwtUtils.TOKEN_CLAIM_ROLES].toString(), claims.subject.toLong())
-        user.username = claims[JwtUtils.TOKEN_CLAIM_USERNAME].toString()
+        val user = User("","", claims[TOKEN_CLAIM_ROLES].toString(), claims.subject.toLong())
+        user.username = claims[TOKEN_CLAIM_USERNAME].toString()
         // Setting up Authentication...
         SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(user, null, user.authorities)
     }

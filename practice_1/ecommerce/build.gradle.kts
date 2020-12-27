@@ -40,6 +40,8 @@ dependencies {
 
 	// Spring security with JWT
 	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+	implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
+	implementation("io.jsonwebtoken:jjwt-orgjson:0.11.2")
 
 	// Spring Test junit, jsoup
 	testImplementation("junit:junit:4.12")
@@ -62,10 +64,7 @@ dependencies {
 
 	// H2database
 	testImplementation("com.h2database:h2:1.3.148")
-
-	// https://mvnrepository.com/artifact/org.hibernate/hibernate-jpamodelgen
-//	implementation("org.hibernate:hibernate-jpamodelgen")
-//	annotationProcessor("org.hibernate:hibernate-jpamodelgen")
+	implementation("jakarta.xml.bind:jakarta.xml.bind-api:2.3.2")
 }
 
 tasks.withType<KotlinCompile> {

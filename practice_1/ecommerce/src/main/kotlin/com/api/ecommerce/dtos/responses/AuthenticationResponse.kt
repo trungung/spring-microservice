@@ -1,5 +1,5 @@
 package com.api.ecommerce.dtos.responses
 
 class AuthenticationResponse(
-    val userName: String,
+    val username: String,
     val token: String)

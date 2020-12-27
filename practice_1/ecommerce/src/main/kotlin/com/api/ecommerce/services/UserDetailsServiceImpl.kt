@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 import com.api.ecommerce.daos.UserRepository
 import com.api.ecommerce.domains.User
-
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 

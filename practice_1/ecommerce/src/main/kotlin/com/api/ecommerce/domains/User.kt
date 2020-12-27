@@ -5,6 +5,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.*
 import javax.persistence.*
+import java.util.stream.Collectors
+
+
+
 
 @Entity
 @Table(name="\"tb_user\"")
@@ -44,6 +48,9 @@ data class User(
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return Collections.singletonList(SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+//        return this.authorities.stream()
+//            .map { authority -> SimpleGrantedAuthority("ROLE_" + role.toUpperCase()) }
+//            .collect(Collectors.toList())
     }
 
     fun setUsername(name: String) {

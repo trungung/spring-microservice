@@ -1,44 +1,37 @@
 package com.api.ecommerce.securities
 
-import io.jsonwebtoken.Jwts
-
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.SignatureAlgorithm
-import java.util.*
+import com.api.ecommerce.services.UserDetailsImpl
+import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
-import org.springframework.stereotype.Component
-
-import javax.crypto.SecretKey
-import io.jsonwebtoken.UnsupportedJwtException
-
-import io.jsonwebtoken.ExpiredJwtException
-
-import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.security.SignatureException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import com.api.ecommerce.services.UserDetailsImpl
 import org.springframework.security.core.Authentication
+import java.nio.charset.StandardCharsets
+import java.util.*
+import javax.crypto.SecretKey
 
-internal class JwtUtils {
+
+class JwtUtils {
 
     companion object {
-        val TOKEN_SECRET_KEY = "ECommerceAppSecretKey"
+        val TOKEN_SECRET_KEY = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E="
         val TOKEN_EXPIRATION: Long = 3600000 // 1 hour
         val TOKEN_CLAIM_USERNAME = "username"
         val TOKEN_CLAIM_ROLES = "roles"
         val TOKEN_PREFIX = "Bearer"
         // creates a spec-compliant secure-random key:
-        val jwtSecret = Keys.secretKeyFor(SignatureAlgorithm.HS256) //or HS384 or HS512
+        private val jwtSecret: SecretKey = Keys.hmacShaKeyFor(TOKEN_SECRET_KEY.toByteArray(StandardCharsets.UTF_8))
         private val logger: Logger = LoggerFactory.getLogger(JwtUtils::class.java)
 
         fun generateJwtToken(authentication: Authentication): String {
-            val userPrincipal = authentication.getPrincipal() as UserDetailsImpl
+            val userPrincipal = authentication.principal as UserDetailsImpl
             return Jwts.builder()
                 .setSubject(userPrincipal.username)
                 .setIssuedAt(Date())
                 .setExpiration(Date(Date().time + TOKEN_EXPIRATION))
-                .signWith(jwtSecret)
+                .setId(UUID.randomUUID().toString())
+//                .signWith(jwtSecret)
                 .compact()
         }
 
@@ -53,14 +46,14 @@ internal class JwtUtils {
                 .setIssuedAt(now)
                 .setNotBefore(now)
                 .setExpiration(exp)
-                .signWith(jwtSecret)
+//                .signWith(jwtSecret)
                 .compact()
             return "$TOKEN_PREFIX $jwtToken"
         }
 
         fun parseToken(token: String): Claims {
             return Jwts.parserBuilder()
-                .setSigningKey(jwtSecret)
+//                .setSigningKey(jwtSecret)
                 .build()
                 .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                 .body
@@ -74,7 +67,7 @@ internal class JwtUtils {
         fun validateJwtToken(authToken: String?): Boolean {
             try {
                 Jwts.parserBuilder()
-                    .setSigningKey(jwtSecret)
+//                    .setSigningKey(jwtSecret)
                     .build().parseClaimsJws(authToken)
                 return true
             } catch (e: SignatureException) {

@@ -1,14 +1,18 @@
 package com.api.ecommerce.configurations
 
 import com.api.ecommerce.securities.JWTAuthenticationFilter
+import com.api.ecommerce.services.UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -18,11 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
-
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy
-import org.springframework.security.config.annotation.web.builders.WebSecurity
 
 @Configuration
 @EnableWebSecurity
@@ -30,10 +29,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity
 class SecurityConfig: WebSecurityConfigurerAdapter() {
 
     @Autowired
-    lateinit var authenticationFilter: JWTAuthenticationFilter
-
-    @Autowired
-    lateinit var userDetailsService: UserDetailsService
+    lateinit var userDetailsService: UserDetailsServiceImpl
 
     private val PERMITTED = listOf(
         // -- swagger ui
@@ -104,17 +100,17 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .logout().permitAll()
             .and()
 
-//        // Set unauthorized requests exception handler
-//        http.exceptionHandling()
-//            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
-//                response.sendError(
-//                    HttpServletResponse.SC_UNAUTHORIZED,
-//                    ex.message
-//                )
-//            }
+        // Set unauthorized requests exception handler
+        http.exceptionHandling()
+            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
+                response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    ex.message
+                )
+            }
 
         // Custom JWT based security filter
-        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterBefore(JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
         // disable page caching
         http.headers().cacheControl()
     }
@@ -140,13 +136,8 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
     }
 
     @Bean
-    override fun userDetailsService(): UserDetailsService {
+    override fun userDetailsService(): UserDetailsServiceImpl {
         return userDetailsService
-    }
-
-    @Bean
-    fun authenticationFilter(): JWTAuthenticationFilter {
-        return JWTAuthenticationFilter()
     }
 
     // Note: if we want to manage more roles, probably we need to create a UserRole entity class
