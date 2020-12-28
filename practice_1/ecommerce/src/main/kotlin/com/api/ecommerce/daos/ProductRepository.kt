@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ProductRepository: JpaRepository<Product, Long> {
 
-    fun findAllByCategoryId(category_id: Long): List<Product>
+    fun findAllByCategoryId(categoryId: Long): List<Product>
 
     fun findAllByCategoryIsIn(categories: List<Category>): List<Product>
 }

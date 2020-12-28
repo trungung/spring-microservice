@@ -18,8 +18,8 @@ class JwtUtils {
         val TOKEN_SECRET_KEY = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E="
         val TOKEN_EXPIRATION: Long = 3600000 // 1 hour
         val TOKEN_CLAIM_USERNAME = "username"
-        val TOKEN_CLAIM_ROLES = "roles"
-        val TOKEN_PREFIX = "Bearer"
+        val TOKEN_CLAIM_ROLES = "role"
+        val TOKEN_PREFIX = "Bearer "
         // creates a spec-compliant secure-random key:
         private val jwtSecret: SecretKey = Keys.hmacShaKeyFor(TOKEN_SECRET_KEY.toByteArray(StandardCharsets.UTF_8))
         private val logger: Logger = LoggerFactory.getLogger(JwtUtils::class.java)
@@ -48,7 +48,7 @@ class JwtUtils {
                 .setExpiration(exp)
 //                .signWith(jwtSecret)
                 .compact()
-            return "$TOKEN_PREFIX $jwtToken"
+            return "$TOKEN_PREFIX$jwtToken"
         }
 
         fun parseToken(token: String): Claims {

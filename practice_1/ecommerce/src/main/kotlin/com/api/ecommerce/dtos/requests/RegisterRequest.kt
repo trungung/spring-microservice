@@ -1,6 +1,6 @@
 package com.api.ecommerce.dtos.requests
 
-import com.api.ecommerce.dtos.exceptions.StatusCode
+import com.api.ecommerce.errors.StatusCode
 import java.util.regex.Pattern
 
 class RegisterRequest(
@@ -11,11 +11,11 @@ class RegisterRequest(
 ) {
     fun validate(): StatusCode {
 
-        if (userName.isEmpty()) return StatusCode.NameNotNull
-        if (email.isEmpty()) return StatusCode.EmailNotNull
-        if (!isEmailValid(email)) return StatusCode.EmailInvalid
-        if (password.length < 6) return StatusCode.PasswordMinLength
-        if (password.length > 12) return StatusCode.PasswordMaxLength
+        if (userName.isEmpty()) return StatusCode.AUTH_INVALID_NAME
+        if (email.isEmpty()) return StatusCode.AUTH_EMAIL_NULL_OR_EMPTY
+        if (!isEmailValid(email)) return StatusCode.AUTH_EMAIL_INVALID
+        if (password.length < 6) return StatusCode.AUTH_PASSWORD_TOO_SHORT
+        if (password.length > 12) return StatusCode.AUTH_PASSWORD_TOO_LONG
 
         return StatusCode.OK
     }

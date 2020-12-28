@@ -2,7 +2,7 @@ package com.api.ecommerce.controllers
 
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
-import com.api.ecommerce.dtos.exceptions.StatusCode
+import com.api.ecommerce.errors.StatusCode
 import com.api.ecommerce.dtos.requests.AuthenticationRequest
 import com.api.ecommerce.dtos.requests.RegisterRequest
 import org.junit.Test
@@ -37,7 +37,7 @@ class AuthenticationControllerTest: BaseControllerTest() {
         val request = RegisterRequest("abc", "123456789", "invalid", "123456789")
         performPostRequest("/register", request)
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("${StatusCode.EmailInvalid.code}"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("${StatusCode.AUTH_EMAIL_INVALID.code}"))
             .andReturn()
     }
 
@@ -47,7 +47,7 @@ class AuthenticationControllerTest: BaseControllerTest() {
 
         performPostRequest("/register", request)
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("${StatusCode.NameNotNull.code}"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("${StatusCode.AUTH_INVALID_NAME.code}"))
             .andReturn()
     }
 

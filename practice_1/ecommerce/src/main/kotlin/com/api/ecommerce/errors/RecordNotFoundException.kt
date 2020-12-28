@@ -1,7 +1,10 @@
 package com.api.ecommerce.errors
 
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.server.ResponseStatusException
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class RecordNotFoundException(exception: String?) : RuntimeException(exception)
+class ResourceNotFoundException : ResponseStatusException {
+    constructor() : super(HttpStatus.NOT_FOUND)
+    constructor(reason: String) : super(HttpStatus.NOT_FOUND, reason)
+    constructor(reason: String, cause: Throwable) : super(HttpStatus.NOT_FOUND, reason, cause)
+}

@@ -1,5 +1,6 @@
 package com.api.ecommerce.configurations
 
+import com.api.ecommerce.securities.AuthEntryPointJwt
 import com.api.ecommerce.securities.JWTAuthenticationFilter
 import com.api.ecommerce.services.UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,16 +17,9 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.AuthenticationException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import com.api.ecommerce.securities.AuthEntryPointJwt
-
-
-
 
 @Configuration
 @EnableWebSecurity
@@ -37,6 +31,41 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var unauthorizedHandler: AuthEntryPointJwt
+
+    @Bean
+    fun authenticationJwtTokenFilter(): JWTAuthenticationFilter {
+        return JWTAuthenticationFilter()
+    }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun unauthorizedHandler(): AuthEntryPointJwt {
+        return AuthEntryPointJwt()
+    }
+
+    @Bean
+    @Throws(Exception::class)
+    override fun authenticationManagerBean(): AuthenticationManager {
+        return super.authenticationManagerBean()
+    }
+
+    @Bean
+    override fun userDetailsService(): UserDetailsServiceImpl {
+        return userDetailsService
+    }
+
+    // Note: if we want to manage more roles, probably we need to create a UserRole entity class
+    // and keep this logic isolated somewhere
+    @Bean
+    fun roleHierarchy(): RoleHierarchy {
+        val roleHierarchy = RoleHierarchyImpl()
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER")
+        return roleHierarchy
+    }
 
     private val PERMITTED = listOf(
         // -- swagger ui
@@ -89,15 +118,11 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
         // 4) All the other requests need to be authenticated
         // 5) Adding to the filter chain the JWT Authentication Filter
         http
-            .csrf()
-            .disable()
-            .headers()
-            .frameOptions()
-            .sameOrigin()
+            .cors().and().csrf().disable()
+            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
             .and()
             .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers("/h2", "/h2/**", "/error").permitAll()
@@ -105,57 +130,19 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .anyRequest().authenticated()
             .and()
             .logout().permitAll()
-            .and()
-
-//        // Set unauthorized requests exception handler
-//        http.exceptionHandling()
-//            .authenticationEntryPoint { _: HttpServletRequest, response: HttpServletResponse, ex: AuthenticationException ->
-//                response.sendError(
-//                    HttpServletResponse.SC_UNAUTHORIZED,
-//                    ex.message
-//                )
-//            }
 
         // Custom JWT based security filter
-        http.addFilterBefore(JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
-        // disable page caching
-        http.headers().cacheControl()
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
     }
 
-//    @Autowired
-//    @Throws(Exception::class)
-//    fun configureGlobal(auth: AuthenticationManagerBuilder) {
-//        auth.inMemoryAuthentication()
-//            .withUser("user").password("{noop}password").roles("USER")
-//            .and()
-//            .withUser("admin").password("{noop}password").roles("ADMIN")
-//    }
-
-    @Bean
-    fun passwordEncoder(): PasswordEncoder? {
-        return BCryptPasswordEncoder()
-    }
-
-    @Bean
+    @Autowired
     @Throws(Exception::class)
-    override fun authenticationManagerBean(): AuthenticationManager {
-        return super.authenticationManagerBean()
+    fun configureGlobal(auth: AuthenticationManagerBuilder) {
+        auth.inMemoryAuthentication()
+            .withUser("user").password("password").roles("USER")
+            .and()
+            .withUser("admin").password("password").roles("ADMIN")
     }
-
-    @Bean
-    override fun userDetailsService(): UserDetailsServiceImpl {
-        return userDetailsService
-    }
-
-    // Note: if we want to manage more roles, probably we need to create a UserRole entity class
-    // and keep this logic isolated somewhere
-    @Bean
-    fun roleHierarchy(): RoleHierarchy {
-        val roleHierarchy = RoleHierarchyImpl()
-        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER")
-        return roleHierarchy
-    }
-
 
     // Define error messages
     companion object {

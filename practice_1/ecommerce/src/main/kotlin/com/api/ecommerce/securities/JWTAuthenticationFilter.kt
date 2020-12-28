@@ -27,11 +27,11 @@ class JWTAuthenticationFilter: OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token: String? = request.getHeader(HEADER_STRING)
-
+        val token: String = parseJwt(request)
+        logger.debug("Failed when authenticating token $token")
         if (SecurityContextHolder.getContext().authentication == null) {
             try {
-                token?.let { securityService.authenticate(it) }
+                securityService.authenticate(token)
             } catch (e: Exception) {
                 logger.debug("Failed when authenticating token ${token}. Error: ${e.message}")
             }
@@ -41,7 +41,7 @@ class JWTAuthenticationFilter: OncePerRequestFilter() {
     }
 
     private fun parseJwt(request: HttpServletRequest): String {
-        val headerAuth = request.getHeader("Authorization")
+        val headerAuth = request.getHeader(HEADER_STRING)
         return if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             headerAuth.substring(7, headerAuth.length)
         } else ""
