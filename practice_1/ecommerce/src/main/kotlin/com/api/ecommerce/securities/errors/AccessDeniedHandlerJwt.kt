@@ -2,7 +2,7 @@ package com.api.ecommerce.securities.errors
 
 import com.api.ecommerce.errors.ErrorResponse
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import netscape.security.Privilege.FORBIDDEN
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.security.web.access.AccessDeniedHandler
 import java.io.IOException
@@ -19,12 +19,12 @@ class AccessDeniedHandlerJwt : AccessDeniedHandler {
     ) {
         val errorResponse = request?.requestURI?.let {
             ErrorResponse.Builder()
-                .status(FORBIDDEN)
+                .status(HttpStatus.FORBIDDEN.value())
                 .message("Invalid Authorization token")
                 .path(it)
                 .build()
         }
-        response?.status = FORBIDDEN
+        response?.status = HttpStatus.FORBIDDEN.value()
         response?.contentType = APPLICATION_JSON_VALUE
         response?.writer?.write(jacksonObjectMapper().writeValueAsString(errorResponse))
     }
