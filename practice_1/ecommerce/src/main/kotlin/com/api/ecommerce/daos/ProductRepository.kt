@@ -2,6 +2,8 @@ package com.api.ecommerce.daos
 
 import com.api.ecommerce.domains.Category
 import com.api.ecommerce.domains.Product
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ProductRepository: JpaRepository<Product, Long> {
 
-    fun findAllByCategoryId(category_id: Long): List<Product>
+    fun findAllByCategoryId(categoryId: Long, page: Pageable): Page<Product>
 
-    fun findAllByCategoryIsIn(categories: List<Category>): List<Product>
+    fun findAllByCategoryIsIn(categories: List<Category>, page: Pageable): List<Product>
 }

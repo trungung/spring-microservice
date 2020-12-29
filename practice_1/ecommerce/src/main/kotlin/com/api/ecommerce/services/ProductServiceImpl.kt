@@ -30,14 +30,14 @@ class ProductServiceImpl: ProductService {
         return productRepository.findAll(page)
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Transactional
     override fun getAllProducts(category: Category, page: Pageable): Page<Product> {
-        TODO("Not yet implemented")
+        return productRepository.findAllByCategoryId(category.id, page)
     }
 
     @Transactional
     override fun getProductById(id: Long): Optional<Product> {
-
-
         return productRepository.findById(id)
     }
 

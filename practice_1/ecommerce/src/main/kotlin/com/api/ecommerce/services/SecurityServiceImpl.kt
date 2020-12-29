@@ -39,7 +39,8 @@ class SecurityServiceImpl: SecurityService, UserDetailsService {
         SecurityContextHolder.getContext().authentication = authentication
 
          val user: User = loadUserByUsername(username)
-        return JwtUtils.generateJwtToken(authentication)
+        // return JwtUtils.generateJwtToken(authentication)
+        return JwtUtils.generateToken(user.userId, username, user.role)
     }
 
     @Transactional

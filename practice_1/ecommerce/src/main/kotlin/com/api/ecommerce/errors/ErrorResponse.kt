@@ -1,19 +1,39 @@
 package com.api.ecommerce.errors
 
-import javax.xml.bind.annotation.XmlRootElement
+import org.springframework.http.HttpHeaders
 
-@XmlRootElement(name = "error")
-class ErrorResponse(
-    //General error message about nature of error
-    private val code: Int,
-    private val message: String, //Specific errors in API request processing
+import org.springframework.http.ResponseEntity
+
+
+class ErrorResponse private constructor(
+    // General error message about nature of error
+    val status: Int,
+    val code: Int,
+    val error: String?,
+    val message: String?, // Specific errors in API request processing
+    val path: String?
 ) {
-    // Define error messages
-    companion object {
-        private const val INVALID_EMAIL = 404
-        private const val INVALID_PASS = 404
-        private const val INVALID_USERNAME = 404
-        private const val RECORD_NOT_FOUND_ERROR = "Record Not Found"
-        private const val FAIL_VALIDATE_ERROR = "Validation Failed"
+    data class Builder(
+        var status: Int = 0,
+        var code: Int = 0,
+        var error: String = "",
+        var message: String = "",
+        var path: String = ""
+    ) {
+        fun status(status: Int) = apply { this.status = status }
+
+        fun code(code: Int) = apply { this.code = code }
+
+        fun error(error: String) = apply { this.error = error }
+
+        fun message(message: String) = apply { this.message = message }
+
+        fun path(path: String) = apply { this.path = path }
+
+        fun build() = ErrorResponse(status, code, error, message, path)
+
+        fun entity(): ResponseEntity<ErrorResponse> {
+            return ResponseEntity.status(status).headers(HttpHeaders.EMPTY).body(build())
+        }
     }
 }

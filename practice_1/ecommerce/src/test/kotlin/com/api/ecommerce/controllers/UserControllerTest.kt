@@ -38,6 +38,7 @@ class UserControllerTest: BaseControllerTest() {
 
     @Test
     fun createAdminUser_success() {
+        userRepository.deleteAll()
         val user = User("email@gmail.com", "123456789", Role.ADMIN.value)
         user.username = "userName"
         user.password = "password"

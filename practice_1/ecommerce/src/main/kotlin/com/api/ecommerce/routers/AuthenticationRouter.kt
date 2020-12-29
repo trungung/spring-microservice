@@ -1,4 +1,4 @@
-package com.api.ecommerce.apis
+package com.api.ecommerce.routers
 
 import com.api.ecommerce.dtos.requests.AuthenticationRequest
 import com.api.ecommerce.dtos.requests.RegisterRequest
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 
 @RequestMapping("/")
-interface AuthenticationApi {
+interface AuthenticationRouter {
 
     @PostMapping("register")
     fun customerRegister(@RequestBody request: RegisterRequest): ResponseEntity<Any>

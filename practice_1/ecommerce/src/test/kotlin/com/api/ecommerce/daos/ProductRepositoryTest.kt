@@ -35,7 +35,7 @@ class ProductRepositoryTest {
         Assert.assertTrue(categoryFound.isPresent)
         Assert.assertTrue(found.isPresent)
         Assert.assertEquals(found.get().id, product.id)
-        Assert.assertEquals(found.get().category, product.category)
+        Assert.assertEquals(product.category, found.get().category)
     }
 
     @Test
@@ -52,7 +52,7 @@ class ProductRepositoryTest {
         // then
         Assert.assertTrue(categoryFound.isPresent)
         Assert.assertTrue(found.isPresent)
-        Assert.assertEquals(categoryFound.get().id, product.category.id)
+        Assert.assertEquals(product.category.id, categoryFound.get().id)
     }
 
     @Test
@@ -67,7 +67,7 @@ class ProductRepositoryTest {
 
         // then
         Assert.assertTrue(found.isPresent)
-        Assert.assertEquals(found.get().name, product.name)
+        Assert.assertEquals(product.name, found.get().name)
     }
 
     @Test
@@ -85,7 +85,7 @@ class ProductRepositoryTest {
 
         // then
         Assert.assertTrue(found.isPresent)
-        Assert.assertEquals(found.get().name, product.name)
+        Assert.assertEquals(product.name, found.get().name)
     }
 
     @Test
