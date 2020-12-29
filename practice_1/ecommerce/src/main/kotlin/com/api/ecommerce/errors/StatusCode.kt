@@ -40,5 +40,5 @@ enum class StatusCode(val code: Int) {
     AlreadyReported(208),
     IMUsed(226),
 
-    Unknown(0)
+    UNKNOW(0)
 }

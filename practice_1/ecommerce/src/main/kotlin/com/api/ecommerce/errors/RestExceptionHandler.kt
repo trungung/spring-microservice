@@ -15,6 +15,7 @@ import org.springframework.web.context.request.WebRequest
 import java.lang.Exception
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.http.HttpHeaders
+import org.springframework.web.bind.annotation.ResponseStatus
 
 /**
  * Exception Resolver.
@@ -24,10 +25,16 @@ import org.springframework.http.HttpHeaders
 @RestControllerAdvice
 class RestExceptionHandler: ResponseEntityExceptionHandler() {
 
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequestException(ex: BadRequestException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        logger.error(ex.reason, ex)
+        return handleErrorException(ex.statusCode.code, HttpStatus.BAD_REQUEST, request)
+    }
+
     @ExceptionHandler(ResponseStatusException::class)
     fun handleStatusException(ex: ResponseStatusException, request: WebRequest): ResponseEntity<ErrorResponse> {
         logger.error(ex.reason, ex)
-        return handleErrorException(ex, request)
+        return handleErrorException(ex.rawStatusCode, HttpStatus.BAD_REQUEST, request)
     }
 
     @ExceptionHandler(EntityNotFoundException::class)
@@ -43,7 +50,7 @@ class RestExceptionHandler: ResponseEntityExceptionHandler() {
     @ExceptionHandler(Exception::class)
     fun handleExceptions(ex: Exception, request: WebRequest): ResponseEntity<ErrorResponse> {
         logger.error(ex.localizedMessage, ex)
-        return handleErrorException(ex, request)
+        return handleErrorException(StatusCode.UNKNOW.code, HttpStatus.INTERNAL_SERVER_ERROR, request)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -59,9 +66,9 @@ class RestExceptionHandler: ResponseEntityExceptionHandler() {
             handleStatusException(status, ex, request)
         } else if (HttpStatus.INTERNAL_SERVER_ERROR == status) {
             request.setAttribute("javax.servlet.error.exception", ex, 0)
-            handleErrorException(ex, request)
+            handleErrorException(StatusCode.UNKNOW.code, HttpStatus.INTERNAL_SERVER_ERROR, request)
         } else {
-            handleErrorException(ex, request)
+            handleErrorException(StatusCode.UNKNOW.code, HttpStatus.INTERNAL_SERVER_ERROR, request)
         }
 
         return responseEntity as ResponseEntity<Any>
@@ -90,13 +97,14 @@ class RestExceptionHandler: ResponseEntityExceptionHandler() {
      *      Status code
      *      Message
      *      Path
-     * @param ex the error exception
+     * @param internalCode the internal code error
      * @param request api request
      * @return custom response entity
      */
-    private fun handleErrorException(ex: Exception, request: WebRequest): ResponseEntity<ErrorResponse> {
+    private fun handleErrorException(internalCode: Int, httpStatus: HttpStatus, request: WebRequest): ResponseEntity<ErrorResponse> {
         return ErrorResponse.Builder()
-            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+            .status(httpStatus.value())
+            .code(internalCode)
             .message("Server encountered an error")
             .path(getPath(request))
             .entity()

@@ -10,6 +10,7 @@ import com.api.ecommerce.dtos.requests.RegisterRequest
 import com.api.ecommerce.dtos.responses.AuthenticationResponse
 import com.api.ecommerce.dtos.responses.DataResponse
 import com.api.ecommerce.dtos.responses.RegisterResponse
+import com.api.ecommerce.errors.BadRequestException
 import com.api.ecommerce.errors.RequestInvalidException
 import com.api.ecommerce.services.SecurityService
 import org.slf4j.Logger
@@ -38,15 +39,13 @@ class AuthenticationController(
         // Validate request body
         val valid = request.validate()
         if (valid != StatusCode.OK) {
-            val errorResponse = DataResponse<Any>(valid.code)
-            return ResponseEntity.badRequest().body(errorResponse)
+            throw BadRequestException(valid)
         }
 
         // Check email is exist
         val findUser = userRepository.findByEmail(request.email)
         if (findUser != null) {
-            val errorResponse = DataResponse<Any>(StatusCode.AUTH_EMAIL_EXIST.code)
-            return ResponseEntity.badRequest().body(errorResponse)
+            throw BadRequestException(StatusCode.AUTH_EMAIL_EXIST)
         }
 
         // Create admin user and save to db
