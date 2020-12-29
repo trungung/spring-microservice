@@ -1,9 +1,10 @@
 package com.api.ecommerce.controllers
 
-import com.api.ecommerce.apis.ProductApi
+import com.api.ecommerce.routers.ProductRouter
 import com.api.ecommerce.daos.CategoryRepository
 import com.api.ecommerce.domains.Product
 import com.api.ecommerce.dtos.requests.ProductRequest
+import com.api.ecommerce.errors.ResourceNotFoundException
 import com.api.ecommerce.services.ProductService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -24,9 +25,19 @@ class ProductController(
     val productService: ProductService,
     @Autowired
     val categoryRepository: CategoryRepository
-): ProductApi {
+): ProductRouter {
 
-    override fun retrieveAllProducts(pageable: Pageable): ResponseEntity<Any> {
+    override fun retrieveAllProducts(@RequestParam("category_id") categoryId: Long?, pageable: Pageable): ResponseEntity<Any> {
+        categoryId?.let {
+            val category = categoryRepository.findById(it)
+            if (!category.isPresent) {
+                throw ResourceNotFoundException("Not found Category by ID")
+            }
+
+            val products = productService.getAllProducts(category.get(), pageable)
+
+            return ResponseEntity.ok(products)
+        }
         // Getting all products in application...
         val products: Page<Product> = productService.getAllProducts(pageable)
         return ResponseEntity.ok(products)
@@ -36,26 +47,16 @@ class ProductController(
         // Getting the requiring product
         val product = productService.getProductById(productId)
         if (!product.isPresent) {
-            return ResponseEntity.notFound().build()
+            throw ResourceNotFoundException("Not found Product by ID")
         }
 
         return ResponseEntity.ok(product)
     }
 
-    override fun filterProductsByCategoryId(@RequestParam categoryId: Long, pageable: Pageable): ResponseEntity<Any> {
-        val category = categoryRepository.findById(categoryId)
-        if (!category.isPresent) {
-            return ResponseEntity.notFound().build()
-        }
-
-        val products = productService.getAllProducts(category.get(), pageable)
-        return ResponseEntity.ok(products)
-    }
-
     override fun createProduct(@RequestBody request: ProductRequest): ResponseEntity<Any> {
         val category = categoryRepository.findById(request.categoryId)
         if (!category.isPresent) {
-            return ResponseEntity.notFound().build()
+            throw ResourceNotFoundException("Not found Category by ID")
         }
         val product = productService.createProduct(request.name, request.description, request.unit, request.price, category.get())
         return ResponseEntity.created(URI("/products/${product.id}")).body(product)
@@ -64,7 +65,7 @@ class ProductController(
     override fun updateProduct(@PathVariable id: Long, @RequestBody request: ProductRequest): ResponseEntity<Product> {
         val productOptional = productService.getProductById(id)
         if (!productOptional.isPresent) {
-            return ResponseEntity.notFound().build()
+            throw ResourceNotFoundException("Not found Product by ID")
         }
 
         val product = productOptional.get()
@@ -75,7 +76,7 @@ class ProductController(
     override fun deleteProduct(@PathVariable("id") productId: Long): ResponseEntity<Any> {
         val product = productService.getProductById(productId)
         if (!product.isPresent) {
-            return ResponseEntity.notFound().build()
+            throw ResourceNotFoundException("Not found Product by ID")
         }
         productService.deleteProduct(product.get())
         return ResponseEntity.noContent().build()

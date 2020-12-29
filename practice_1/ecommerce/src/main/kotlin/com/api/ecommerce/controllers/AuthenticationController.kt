@@ -1,6 +1,6 @@
 package com.api.ecommerce.controllers
 
-import com.api.ecommerce.apis.AuthenticationApi
+import com.api.ecommerce.routers.AuthenticationRouter
 import com.api.ecommerce.daos.UserRepository
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
@@ -10,6 +10,7 @@ import com.api.ecommerce.dtos.requests.RegisterRequest
 import com.api.ecommerce.dtos.responses.AuthenticationResponse
 import com.api.ecommerce.dtos.responses.DataResponse
 import com.api.ecommerce.dtos.responses.RegisterResponse
+import com.api.ecommerce.errors.RequestInvalidException
 import com.api.ecommerce.services.SecurityService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,7 +29,7 @@ class AuthenticationController(
     @Autowired val userRepository: UserRepository,
     @Autowired val securityService: SecurityService,
     @Autowired var encoder: PasswordEncoder
-    ): AuthenticationApi {
+    ): AuthenticationRouter {
 
     private val logger: Logger = LoggerFactory.getLogger(AuthenticationController::class.java)
 

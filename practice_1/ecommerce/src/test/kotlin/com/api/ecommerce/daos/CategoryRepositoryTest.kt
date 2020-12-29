@@ -25,7 +25,7 @@ class CategoryRepositoryTest {
         val found = categoryRepository.findById(category.id)
         // then
         Assert.assertTrue(found.isPresent)
-        Assert.assertEquals(found.get().id, category.id)
+        Assert.assertEquals(category.id, found.get().id)
     }
 
     @Test
@@ -39,7 +39,7 @@ class CategoryRepositoryTest {
 
         // then
         Assert.assertTrue(found.isPresent)
-        Assert.assertEquals(found.get().name, category.name)
+        Assert.assertEquals(category.name, found.get().name)
     }
 
     @Test
@@ -56,7 +56,7 @@ class CategoryRepositoryTest {
 
         // then
         Assert.assertTrue(found.isPresent)
-        Assert.assertEquals(found.get().name, category.name)
+        Assert.assertEquals(category.name, found.get().name)
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.api.ecommerce.apis
+package com.api.ecommerce.routers
 
 import com.api.ecommerce.domains.Category
 import com.api.ecommerce.dtos.requests.CategoryRequest
@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/categories")
-interface CategoryApi {
+interface CategoryRouter {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")

@@ -28,7 +28,7 @@ class JWTAuthenticationFilter: OncePerRequestFilter() {
         filterChain: FilterChain
     ) {
         val token: String = parseJwt(request)
-        logger.debug("Failed when authenticating token $token")
+        logger.debug("Authenticating token $token")
         if (SecurityContextHolder.getContext().authentication == null) {
             try {
                 securityService.authenticate(token)

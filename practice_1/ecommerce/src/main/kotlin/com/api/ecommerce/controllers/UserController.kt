@@ -1,12 +1,11 @@
 package com.api.ecommerce.controllers
 
-import com.api.ecommerce.apis.UserApi
+import com.api.ecommerce.routers.UserRouter
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.dtos.requests.UserRequest
 import com.api.ecommerce.daos.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*
  *       JUST FOR TESTING AND DEBUG
  */
 @RestController
-class UserController(@Autowired val userRepository: UserRepository): UserApi {
+class UserController(@Autowired val userRepository: UserRepository): UserRouter {
 
     override fun getAllUsers(): List<User> {
         return userRepository.findAll().distinct()

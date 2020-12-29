@@ -41,7 +41,7 @@ class ProductControllerTest: BaseControllerTest() {
     @Test
     @WithMockUser(username="user",roles=["USER"])
     fun filterProductsByCategoryId() {
-        //setupCategory()
+        setupCategory()
         val categories = categoryRepository.findAll().distinct()
         for (i in 0..10) {
             val product = Product("P_$i", "p", 1, 1000.0, categories[0])
@@ -53,8 +53,8 @@ class ProductControllerTest: BaseControllerTest() {
         }
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/products/filter")
-                .param("categoryId", "${categories[0].id}")
+            MockMvcRequestBuilders.get("/products")
+                .param("category_id", "${categories[0].id}")
                 .param("page", "0")
                 .param("size", "1")
             .accept(MediaType.APPLICATION_JSON)

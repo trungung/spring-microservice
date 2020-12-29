@@ -1,4 +1,4 @@
-package com.api.ecommerce.apis
+package com.api.ecommerce.routers
 
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.dtos.requests.UserRequest
@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/users")
-interface UserApi {
+interface UserRouter {
     @GetMapping("")
     fun getAllUsers(): List<User>
 

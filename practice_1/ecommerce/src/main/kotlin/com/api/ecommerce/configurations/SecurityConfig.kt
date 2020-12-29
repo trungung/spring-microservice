@@ -1,6 +1,6 @@
 package com.api.ecommerce.configurations
 
-import com.api.ecommerce.securities.AuthEntryPointJwt
+import com.api.ecommerce.errors.AuthEntryPointJwt
 import com.api.ecommerce.securities.JWTAuthenticationFilter
 import com.api.ecommerce.services.UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired

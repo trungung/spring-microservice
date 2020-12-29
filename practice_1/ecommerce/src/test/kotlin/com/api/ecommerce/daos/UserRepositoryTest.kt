@@ -53,7 +53,7 @@ class UserRepositoryTest {
 
         // then
         assertNotNull(found)
-        assertEquals(found.get().username, user.username)
+        assertEquals(user.username, found.get().username)
     }
 
     @Test
@@ -70,7 +70,7 @@ class UserRepositoryTest {
 
         // then
         assertNotNull(found)
-        assertEquals(found?.email, user.email)
+        assertEquals(user.email, found?.email)
     }
 
     @Test
