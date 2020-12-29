@@ -4,7 +4,7 @@ import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 import com.api.ecommerce.domains.User
-import com.api.ecommerce.daos.UserRepository
+import com.api.ecommerce.repositories.UserRepository
 import com.api.ecommerce.domains.Role
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull

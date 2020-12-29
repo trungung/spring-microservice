@@ -1,4 +1,4 @@
-package com.api.ecommerce.daos
+package com.api.ecommerce.repositories
 
 enum class QueryOperator {
     GREATER_THAN,

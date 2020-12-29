@@ -1,7 +1,7 @@
 package com.api.ecommerce.controllers
 
 import com.api.ecommerce.routers.AuthenticationRouter
-import com.api.ecommerce.daos.UserRepository
+import com.api.ecommerce.repositories.UserRepository
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.errors.StatusCode

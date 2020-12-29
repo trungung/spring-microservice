@@ -1,6 +1,6 @@
 package com.api.ecommerce
 
-import com.api.ecommerce.daos.UserRepository
+import com.api.ecommerce.repositories.UserRepository
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
 import org.springframework.beans.factory.annotation.Autowired

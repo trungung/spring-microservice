@@ -1,6 +1,6 @@
 package com.api.ecommerce.services
 
-import com.api.ecommerce.daos.UserRepository
+import com.api.ecommerce.repositories.UserRepository
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.securities.JwtUtils
 import com.api.ecommerce.securities.JwtUtils.Companion.TOKEN_CLAIM_ROLES

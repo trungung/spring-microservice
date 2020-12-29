@@ -3,8 +3,8 @@ package com.api.ecommerce.controllers
 import com.api.ecommerce.domains.Category
 import com.api.ecommerce.domains.Product
 import com.api.ecommerce.dtos.requests.ProductRequest
-import com.api.ecommerce.daos.CategoryRepository
-import com.api.ecommerce.daos.ProductRepository
+import com.api.ecommerce.repositories.CategoryRepository
+import com.api.ecommerce.repositories.ProductRepository
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,4 +1,4 @@
-package com.api.ecommerce.daos
+package com.api.ecommerce.repositories
 
 import com.api.ecommerce.domains.Category
 import org.junit.Assert

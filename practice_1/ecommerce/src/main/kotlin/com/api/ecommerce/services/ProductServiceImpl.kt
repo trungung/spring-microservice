@@ -1,7 +1,7 @@
 package com.api.ecommerce.services
 
-import com.api.ecommerce.daos.CategoryRepository
-import com.api.ecommerce.daos.ProductRepository
+import com.api.ecommerce.repositories.CategoryRepository
+import com.api.ecommerce.repositories.ProductRepository
 import com.api.ecommerce.domains.Category
 import com.api.ecommerce.domains.Product
 import org.springframework.beans.factory.annotation.Autowired

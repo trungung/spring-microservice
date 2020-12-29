@@ -1,4 +1,4 @@
-package com.api.ecommerce.daos
+package com.api.ecommerce.repositories
 
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User

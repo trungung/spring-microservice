@@ -4,7 +4,7 @@ import com.api.ecommerce.routers.UserRouter
 import com.api.ecommerce.domains.Role
 import com.api.ecommerce.domains.User
 import com.api.ecommerce.dtos.requests.UserRequest
-import com.api.ecommerce.daos.UserRepository
+import com.api.ecommerce.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

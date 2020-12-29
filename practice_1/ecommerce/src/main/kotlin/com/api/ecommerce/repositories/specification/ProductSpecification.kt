@@ -1,4 +1,4 @@
-package com.api.ecommerce.daos.specification
+package com.api.ecommerce.repositories.specification
 
 object ProductsSpecifications {
 //    fun hasCategories(categories: List<Category>): Specification<Product> {
