@@ -15,13 +15,14 @@ import javax.crypto.SecretKey
 class JwtUtils {
 
     companion object {
-        val TOKEN_SECRET_KEY = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E="
+        val TOKEN_SECRET_KEY = "Ecommerce_key"
         val TOKEN_EXPIRATION: Long = 3600000 // 1 hour
         val TOKEN_CLAIM_USERNAME = "username"
         val TOKEN_CLAIM_ROLES = "role"
         val TOKEN_PREFIX = "Bearer "
         // creates a spec-compliant secure-random key:
-        private val jwtSecret: SecretKey = Keys.hmacShaKeyFor(TOKEN_SECRET_KEY.toByteArray(StandardCharsets.UTF_8))
+        var jwtSecret: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256)
+//        private val jwtSecret: SecretKey = Keys.hmacShaKeyFor(TOKEN_SECRET_KEY.toByteArray(StandardCharsets.UTF_8))
         private val logger: Logger = LoggerFactory.getLogger(JwtUtils::class.java)
 
         fun generateJwtToken(authentication: Authentication): String {
@@ -31,7 +32,7 @@ class JwtUtils {
                 .setIssuedAt(Date())
                 .setExpiration(Date(Date().time + TOKEN_EXPIRATION))
                 .setId(UUID.randomUUID().toString())
-//                .signWith(jwtSecret)
+                .signWith(jwtSecret)
                 .compact()
         }
 
@@ -46,14 +47,14 @@ class JwtUtils {
                 .setIssuedAt(now)
                 .setNotBefore(now)
                 .setExpiration(exp)
-//                .signWith(jwtSecret)
+                .signWith(jwtSecret)
                 .compact()
             return "$TOKEN_PREFIX$jwtToken"
         }
 
         fun parseToken(token: String): Claims {
             return Jwts.parserBuilder()
-//                .setSigningKey(jwtSecret)
+                .setSigningKey(jwtSecret)
                 .build()
                 .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                 .body
@@ -67,7 +68,7 @@ class JwtUtils {
         fun validateJwtToken(authToken: String?): Boolean {
             try {
                 Jwts.parserBuilder()
-//                    .setSigningKey(jwtSecret)
+                    .setSigningKey(jwtSecret)
                     .build().parseClaimsJws(authToken)
                 return true
             } catch (e: SignatureException) {
